@@ -1,4 +1,4 @@
-// mdfmt formats Markdown.
+// markdownfmt formats Markdown.
 package main
 
 import (
@@ -14,12 +14,12 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/shurcooL/go/markdown"
+	"github.com/shurcooL/markdownfmt/markdown"
 )
 
 var (
 	// Main operation modes.
-	list   = flag.Bool("l", false, "list files whose formatting differs from mdfmt's")
+	list   = flag.Bool("l", false, "list files whose formatting differs from markdownfmt's")
 	write  = flag.Bool("w", false, "write result to (source) file instead of stdout")
 	doDiff = flag.Bool("d", false, "display diffs instead of rewriting files")
 
@@ -32,7 +32,7 @@ func report(err error) {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: mdfmt [flags] [path ...]\n")
+	fmt.Fprintf(os.Stderr, "usage: markdownfmt [flags] [path ...]\n")
 	flag.PrintDefaults()
 	os.Exit(2)
 }
@@ -79,7 +79,7 @@ func processFile(filename string, in io.Reader, out io.Writer, stdin bool) error
 			if err != nil {
 				return fmt.Errorf("computing diff: %s", err)
 			}
-			fmt.Printf("diff %s mdfmt/%s\n", filename, filename)
+			fmt.Printf("diff %s markdownfmt/%s\n", filename, filename)
 			out.Write(data)
 		}
 	}
@@ -108,14 +108,14 @@ func walkDir(path string) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// call mdfmtMain in a separate function
+	// call markdownfmtMain in a separate function
 	// so that it can use defer and have them
 	// run before the exit.
-	mdfmtMain()
+	markdownfmtMain()
 	os.Exit(exitCode)
 }
 
-func mdfmtMain() {
+func markdownfmtMain() {
 	flag.Usage = usage
 	flag.Parse()
 
@@ -142,14 +142,14 @@ func mdfmtMain() {
 }
 
 func diff(b1, b2 []byte) (data []byte, err error) {
-	f1, err := ioutil.TempFile("", "mdfmt")
+	f1, err := ioutil.TempFile("", "markdownfmt")
 	if err != nil {
 		return
 	}
 	defer os.Remove(f1.Name())
 	defer f1.Close()
 
-	f2, err := ioutil.TempFile("", "mdfmt")
+	f2, err := ioutil.TempFile("", "markdownfmt")
 	if err != nil {
 		return
 	}
