@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/shurcooL/go/markdown"
+	"github.com/shurcooL/markdownfmt/markdown"
 )
 
 func Example() {
