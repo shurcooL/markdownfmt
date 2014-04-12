@@ -85,7 +85,7 @@ func (_ *markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
 	out.Write(text)
 	out.WriteByte('\n')
 }
-func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int) {
+func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 	doubleSpace(out)
 
@@ -204,7 +204,7 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, a
 	out.WriteString(")")
 }
 func (_ *markdownRenderer) LineBreak(out *bytes.Buffer) {
-	out.WriteString("<br>")
+	out.WriteByte('\n')
 }
 func (m *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, content []byte) {
 	m.spaceIfNeeded(out)
@@ -370,6 +370,7 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	extensions |= blackfriday.EXTENSION_AUTOLINK
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
 	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
+	//extensions |= blackfriday.EXTENSION_HARD_LINE_BREAK
 
 	output := blackfriday.Markdown(text, NewRenderer(), extensions)
 	return output, nil
