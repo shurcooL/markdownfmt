@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/shurcooL/blackfriday"
+	"github.com/russross/blackfriday"
 )
 
 type markdownRenderer struct {
