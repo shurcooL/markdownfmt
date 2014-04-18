@@ -109,7 +109,7 @@ func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int
 }
 func (_ *markdownRenderer) HRule(out *bytes.Buffer) {
 	doubleSpace(out)
-	out.WriteString("* * *")
+	out.WriteString("---\n")
 }
 func (m *markdownRenderer) List(out *bytes.Buffer, text func() bool, flags int) {
 	marker := out.Len()

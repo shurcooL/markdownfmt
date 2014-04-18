@@ -1,0 +1,11 @@
+{
+	"ImportPath": "github.com/shurcooL/markdownfmt",
+	"GoVersion": "go1.2.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/russross/blackfriday",
+			"Comment": "v1.1-87-g9c7cf8b",
+			"Rev": "9c7cf8b1b7ce43e76f0cf9bc1ebf3fb7430bc5ea"
+		}
+	]
+}

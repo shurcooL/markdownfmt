@@ -128,6 +128,8 @@ An h2 header
 
 ~~Mistaken text.~~
 
+---
+
 http://example.com
 
 Now a [link](www.github.com) in a paragraph. End with [link_underscore.go](www.github.com).
