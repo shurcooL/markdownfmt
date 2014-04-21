@@ -296,7 +296,7 @@ func clean(s string) string {
 
 func isPunctuation(b byte) bool {
 	switch b {
-	case ',', '.', ':', ';', '_':
+	case ',', '.', ':', ';', '_', '~':
 		return true
 	default:
 		return false
