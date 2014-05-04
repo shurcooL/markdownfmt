@@ -128,6 +128,10 @@ An h2 header
 
 ~~Mistaken text.~~
 
+This (**should** be *fine*).
+
+A \> B.
+
 ---
 
 http://example.com
@@ -177,7 +181,7 @@ func Test(t *testing.T) {
 		log.Fatalln(err)
 	}
 
-	diff, err := diff(output, []byte(reference))
+	diff, err := diff([]byte(reference), output)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -189,14 +193,14 @@ func Test(t *testing.T) {
 
 // TODO: Factor out.
 func diff(b1, b2 []byte) (data []byte, err error) {
-	f1, err := ioutil.TempFile("", "mdfmt")
+	f1, err := ioutil.TempFile("", "markdownfmt")
 	if err != nil {
 		return
 	}
 	defer os.Remove(f1.Name())
 	defer f1.Close()
 
-	f2, err := ioutil.TempFile("", "mdfmt")
+	f2, err := ioutil.TempFile("", "markdownfmt")
 	if err != nil {
 		return
 	}

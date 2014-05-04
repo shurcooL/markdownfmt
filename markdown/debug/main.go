@@ -120,10 +120,14 @@ func (_ *debugRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 func (_ *debugRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	fmt.Println(GetParentFuncAsString())
 	goon.DumpExpr(string(entity))
+
+	out.Write(entity)
 }
 func (_ *debugRenderer) NormalText(out *bytes.Buffer, text []byte) {
 	fmt.Println(GetParentFuncAsString())
 	goon.DumpExpr(string(text))
+
+	out.Write(text)
 }
 
 func (_ *debugRenderer) DocumentHeader(out *bytes.Buffer) {

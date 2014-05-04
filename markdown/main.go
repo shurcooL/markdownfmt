@@ -32,7 +32,6 @@ func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
 	}
 }
 
-// TODO: Unfinished implementation.
 // Block-level callbacks.
 func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 	doubleSpace(out)
@@ -173,28 +172,22 @@ func (_ *markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
 	out.Write(link)
 }
 func (m *markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
-	m.spaceIfNeeded(out)
 	out.WriteByte('`')
 	out.Write(text)
 	out.WriteByte('`')
-	m.normalTextMarker[out] = out.Len()
 }
 func (m *markdownRenderer) DoubleEmphasis(out *bytes.Buffer, text []byte) {
-	m.spaceIfNeeded(out)
 	out.WriteString("**")
 	out.Write(text)
 	out.WriteString("**")
-	m.normalTextMarker[out] = out.Len()
 }
 func (m *markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	if len(text) == 0 {
 		return
 	}
-	m.spaceIfNeeded(out)
 	out.WriteByte('*')
 	out.Write(text)
 	out.WriteByte('*')
-	m.normalTextMarker[out] = out.Len()
 }
 func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, alt []byte) {
 	out.WriteString("![")
@@ -207,23 +200,19 @@ func (_ *markdownRenderer) LineBreak(out *bytes.Buffer) {
 	out.WriteByte('\n')
 }
 func (m *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, content []byte) {
-	m.spaceIfNeeded(out)
 	out.WriteString("[")
 	out.Write(content)
 	out.WriteString("](")
 	out.Write(link)
 	out.WriteString(")")
-	m.normalTextMarker[out] = out.Len()
 }
 func (_ *markdownRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {
 	out.Write(tag)
 }
 func (m *markdownRenderer) TripleEmphasis(out *bytes.Buffer, text []byte) {
-	m.spaceIfNeeded(out)
 	out.WriteString("***")
 	out.Write(text)
 	out.WriteString("***")
-	m.normalTextMarker[out] = out.Len()
 }
 func (_ *markdownRenderer) StrikeThrough(out *bytes.Buffer, text []byte) {
 	out.WriteString("~~")
@@ -234,18 +223,37 @@ func (_ *markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 	out.WriteString("<FootnoteRef: Not implemented.>") // TODO
 }
 
+func isHtmlNeedEscaping(text []byte) bool {
+	switch s := string(text); s {
+	case "<", ">":
+		return true
+	default:
+		return false
+	}
+}
+
 // Low-level callbacks
 func (_ *markdownRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	out.Write(entity)
 }
 func (m *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
-	cleanString := clean(string(text))
+	if isHtmlNeedEscaping(text) {
+		text = append([]byte("\\"), text...)
+	}
+	if string(text) == "\n" { // TODO: See if this can be cleaned up... It's needed for lists.
+		return
+	}
+	cleanString := cleanWithoutTrim(string(text))
 	if cleanString == "" {
 		return
 	}
-	m.spaceIfNeededNormalText(out, cleanString)
+	if m.skipSpaceIfNeededNormalText(out, cleanString) {
+		cleanString = cleanString[1:]
+	}
 	out.WriteString(cleanString)
-	m.normalTextMarker[out] = out.Len()
+	if len(cleanString) >= 1 && cleanString[len(cleanString)-1] == ' ' {
+		m.normalTextMarker[out] = out.Len()
+	}
 }
 
 // Header and footer.
@@ -254,29 +262,20 @@ func (_ *markdownRenderer) DocumentFooter(out *bytes.Buffer) {}
 
 func (_ *markdownRenderer) GetFlags() int { return 0 }
 
-func (m *markdownRenderer) spaceIfNeeded(out *bytes.Buffer) {
+func (m *markdownRenderer) skipSpaceIfNeededNormalText(out *bytes.Buffer, cleanString string) bool {
+	if cleanString[0] != ' ' {
+		return false
+	}
 	if _, ok := m.normalTextMarker[out]; !ok {
 		m.normalTextMarker[out] = -1
 	}
-	if m.normalTextMarker[out] == out.Len() {
-		out.WriteByte(' ')
-	}
+	return m.normalTextMarker[out] == out.Len()
 }
 
-func (m *markdownRenderer) spaceIfNeededNormalText(out *bytes.Buffer, cleanString string) {
-	if _, ok := m.normalTextMarker[out]; !ok {
-		m.normalTextMarker[out] = -1
-	}
-	if m.normalTextMarker[out] == out.Len() && !isPunctuation(cleanString[0]) {
-		out.WriteByte(' ')
-	}
-}
-
-// clean replaces each sequence of space, \n, \r, or \t characters
-// with a single space and removes any trailing and leading spaces.
-func clean(s string) string {
+// Like clean, but doesn't trim blanks.
+func cleanWithoutTrim(s string) string {
 	var b []byte
-	p := byte(' ')
+	var p byte
 	for i := 0; i < len(s); i++ {
 		q := s[i]
 		if q == '\n' || q == '\r' || q == '\t' {
@@ -287,20 +286,7 @@ func clean(s string) string {
 			p = q
 		}
 	}
-	// Remove trailing blank, if any.
-	if n := len(b); n > 0 && p == ' ' {
-		b = b[0 : n-1]
-	}
 	return string(b)
-}
-
-func isPunctuation(b byte) bool {
-	switch b {
-	case ',', '.', ':', ';', '_', '~':
-		return true
-	default:
-		return false
-	}
 }
 
 func doubleSpace(out *bytes.Buffer) {

@@ -3,9 +3,14 @@
 	"GoVersion": "go1.2.1",
 	"Deps": [
 		{
+			"ImportPath": "code.google.com/p/go.net/html",
+			"Comment": "null-125",
+			"Rev": "88fa3094706609347d6fa1e362d946bbc207fceb"
+		},
+		{
 			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.1-87-g9c7cf8b",
-			"Rev": "9c7cf8b1b7ce43e76f0cf9bc1ebf3fb7430bc5ea"
+			"Comment": "v1.1-115-gf3ab184",
+			"Rev": "f3ab1849e6b17a1564b9088d01fee399a83cddd7"
 		}
 	]
 }
