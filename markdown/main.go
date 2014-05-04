@@ -247,11 +247,11 @@ func (m *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
 	if cleanString == "" {
 		return
 	}
-	if m.skipSpaceIfNeededNormalText(out, cleanString) {
+	if m.skipSpaceIfNeededNormalText(out, cleanString) { // Skip first space if last character is already a space (i.e., no need for a 2nd space in a row).
 		cleanString = cleanString[1:]
 	}
 	out.WriteString(cleanString)
-	if len(cleanString) >= 1 && cleanString[len(cleanString)-1] == ' ' {
+	if len(cleanString) >= 1 && cleanString[len(cleanString)-1] == ' ' { // If it ends with a space, make note of that.
 		m.normalTextMarker[out] = out.Len()
 	}
 }
