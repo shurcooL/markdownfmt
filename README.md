@@ -1,7 +1,7 @@
 markdownfmt
 ===========
 
-`markdownfmt` is to Markdown, like `gofmt` is to Go source code.
+Like `gofmt`, but for Markdown.
 
 Installation
 ------------
@@ -21,3 +21,10 @@ usage: markdownfmt [flags] [path ...]
   -l=false: list files whose formatting differs from markdownfmt's
   -w=false: write result to (source) file instead of stdout
 ```
+
+Editor Plugins
+--------------
+
+- [markdown-format](https://atom.io/packages/markdown-format) for Atom.
+- Built-in in Conception.
+- Add a plugin for your favorite editor here?
