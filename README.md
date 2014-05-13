@@ -3,6 +3,8 @@ markdownfmt
 
 Like `gofmt`, but for Markdown.
 
+![Markdown Format Demo](https://github.com/shurcooL/atom-markdown-format/blob/master/Demo.gif?raw=true)
+
 Installation
 ------------
 
