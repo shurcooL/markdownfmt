@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
 )
 
@@ -100,9 +101,11 @@ func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int
 
 	switch level {
 	case 1:
-		fmt.Fprint(out, "\n", strings.Repeat("=", out.Len()-textMarker))
+		len := runewidth.StringWidth(string(out.Bytes()[textMarker:]))
+		fmt.Fprint(out, "\n", strings.Repeat("=", len))
 	case 2:
-		fmt.Fprint(out, "\n", strings.Repeat("-", out.Len()-textMarker))
+		len := runewidth.StringWidth(string(out.Bytes()[textMarker:]))
+		fmt.Fprint(out, "\n", strings.Repeat("-", len))
 	}
 	out.WriteString("\n")
 }
