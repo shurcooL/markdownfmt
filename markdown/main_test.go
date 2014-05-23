@@ -191,6 +191,42 @@ func Test(t *testing.T) {
 	}
 }
 
+func TestWideChar(t *testing.T) {
+	input := []byte(`タイトル
+==
+
+サブタイトル
+---
+
+aaa/あああ
+----------
+`)
+
+	expected := []byte(`タイトル
+========
+
+サブタイトル
+------------
+
+aaa/あああ
+----------
+`)
+
+	output, err := markdown.Process("", input, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	diff, err := diff(expected, output)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if len(diff) != 0 {
+		t.Errorf("Difference of %d lines:\n%s", bytes.Count(diff, []byte("\n")), string(diff))
+	}
+}
+
 // TODO: Factor out.
 func diff(b1, b2 []byte) (data []byte, err error) {
 	f1, err := ioutil.TempFile("", "markdownfmt")

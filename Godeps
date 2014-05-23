@@ -8,6 +8,11 @@
 			"Rev": "88fa3094706609347d6fa1e362d946bbc207fceb"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-runewidth",
+			"Comment": "travisish-12-g39104c7",
+			"Rev": "39104c78546f11be4bbc161e39858258aac6d9b8"
+		},
+		{
 			"ImportPath": "github.com/russross/blackfriday",
 			"Comment": "v1.1-115-gf3ab184",
 			"Rev": "f3ab1849e6b17a1564b9088d01fee399a83cddd7"
