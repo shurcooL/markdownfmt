@@ -217,7 +217,7 @@ aaa/あああ
 		log.Fatalln(err)
 	}
 
-	diff, err := diff(output, expected)
+	diff, err := diff(expected, output)
 	if err != nil {
 		log.Fatalln(err)
 	}

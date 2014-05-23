@@ -101,10 +101,10 @@ func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int
 
 	switch level {
 	case 1:
-		len := runewidth.StringWidth(string(out.Bytes()[textMarker:]))
+		len := runewidth.StringWidth(out.String()[textMarker:])
 		fmt.Fprint(out, "\n", strings.Repeat("=", len))
 	case 2:
-		len := runewidth.StringWidth(string(out.Bytes()[textMarker:]))
+		len := runewidth.StringWidth(out.String()[textMarker:])
 		fmt.Fprint(out, "\n", strings.Repeat("-", len))
 	}
 	out.WriteString("\n")
