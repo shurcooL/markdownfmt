@@ -152,16 +152,55 @@ func (_ *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 	out.WriteString("\n")
 }
 func (_ *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
-	out.WriteString("<Table: Not implemented.>") // TODO
+	doubleSpace(out)
+	//out.WriteString("<table>\n<thead>\n")
+	out.Write(header)
+	//out.WriteString("</thead>\n\n<tbody>\n")
+	out.WriteString("------------------------\n")
+	out.Write(body)
+	//out.WriteString("</tbody>\n</table>\n")
 }
 func (_ *markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
-	out.WriteString("<TableRow: Not implemented.>") // TODO
+	//doubleSpace(out)
+	//out.WriteString("<tr>\n")
+	out.Write(text)
+	out.WriteString("\n")
+	//out.WriteString("\n</tr>\n")
 }
-func (_ *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, flags int) {
-	out.WriteString("<TableHeaderCell: Not implemented.>") // TODO
+func (_ *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
+	/*doubleSpace(out)
+	switch align {
+	case blackfriday.TABLE_ALIGNMENT_LEFT:
+		out.WriteString("<th align=\"left\">")
+	case blackfriday.TABLE_ALIGNMENT_RIGHT:
+		out.WriteString("<th align=\"right\">")
+	case blackfriday.TABLE_ALIGNMENT_CENTER:
+		out.WriteString("<th align=\"center\">")
+	default:
+		out.WriteString("<th>")
+	}
+
+	out.Write(text)
+	out.WriteString("</th>")*/
+	out.Write(text)
+	out.WriteString(" | ")
 }
-func (_ *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, flags int) {
-	out.WriteString("<TableCell: Not implemented.>") // TODO
+func (_ *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
+	/*doubleSpace(out)
+	switch align {
+	case blackfriday.TABLE_ALIGNMENT_LEFT:
+		out.WriteString("<td align=\"left\">")
+	case blackfriday.TABLE_ALIGNMENT_RIGHT:
+		out.WriteString("<td align=\"right\">")
+	case blackfriday.TABLE_ALIGNMENT_CENTER:
+		out.WriteString("<td align=\"center\">")
+	default:
+		out.WriteString("<td>")
+	}*/
+
+	out.Write(text)
+	out.WriteString(" | ")
+	//out.WriteString("</td>")
 }
 func (m *markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
 	out.WriteString("<Footnotes: Not implemented.>") // TODO
@@ -354,7 +393,7 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	// GitHub Flavored Markdown-like extensions.
 	extensions := 0
 	extensions |= blackfriday.EXTENSION_NO_INTRA_EMPHASIS
-	//extensions |= blackfriday.EXTENSION_TABLES // TODO: Implement.
+	extensions |= blackfriday.EXTENSION_TABLES // TODO: Finish.
 	extensions |= blackfriday.EXTENSION_FENCED_CODE
 	extensions |= blackfriday.EXTENSION_AUTOLINK
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
