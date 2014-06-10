@@ -14,6 +14,23 @@ $ go get -u github.com/shurcooL/markdownfmt
 
 Add `$GOPATH/bin` to your `$PATH` or copy `$GOPATH/bin/markdownfmt` to your `$PATH`.
 
+### Don't have Go?
+
+Install it via Homebrew:
+
+```bash
+brew install go mercurial
+go get -u github.com/shurcooL/markdownfmt
+mkdir ~/gocode
+```
+
+Add to bash profile (`~/.bash_profile` or `~/.profile`):
+
+```bash
+export GOPATH="$HOME/gocode"
+export PATH="$PATH:$GOPATH/bin"
+```
+
 Usage
 -----
 
