@@ -14,7 +14,7 @@ $ go get -u github.com/shurcooL/markdownfmt
 
 Add `$GOPATH/bin` to your `$PATH` or copy `$GOPATH/bin/markdownfmt` to your `$PATH`.
 
-### Don't have Go?
+### Don't have Go on OSX?
 
 Install it via Homebrew:
 
