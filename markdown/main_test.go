@@ -175,7 +175,6 @@ Done.
 `
 
 func Test(t *testing.T) {
-
 	output, err := markdown.Process("", []byte(reference), nil)
 	if err != nil {
 		log.Fatalln(err)
