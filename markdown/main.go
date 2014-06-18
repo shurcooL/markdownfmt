@@ -14,19 +14,16 @@ import (
 	"github.com/russross/blackfriday"
 )
 
-// TODO: Get rid of these.
-const (
-	_ byte = iota
-	_TABLE_ROW_MARKER
-	_TABLE_CELL_MARKER
-)
-
 type markdownRenderer struct {
 	normalTextMarker   map[*bytes.Buffer]int
 	orderedListCounter map[int]int
 	listDepth          int
 
-	tableColumnAligns []int
+	// TODO: Clean these up.
+	headers      []string
+	columnAligns []int
+	columnWidths []int
+	cells        []string
 }
 
 func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
@@ -163,63 +160,23 @@ func (_ *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 
 func (r *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
 	doubleSpace(out)
-	// TODO: Calculate this in TableCell, etc.
-	headerRows := make([][][]byte, 0)
-	for _, row := range bytes.Split(
-		header[:len(header)-1], []byte{_TABLE_ROW_MARKER}) {
-		headerRow := make([][]byte, 0)
-		for _, cell := range bytes.Split(
-			row[:len(row)-1], []byte{_TABLE_CELL_MARKER}) {
-			headerRow = append(headerRow, cell)
-		}
-		headerRows = append(headerRows, headerRow)
-	}
-	bodyRows := make([][][]byte, 0)
-	for _, row := range bytes.Split(
-		body[:len(body)-1], []byte{_TABLE_ROW_MARKER}) {
-		if len(row) == 0 {
-			continue
-		}
-		bodyRow := make([][]byte, 0)
-		for _, cell := range bytes.Split(
-			row[:len(row)-1], []byte{_TABLE_CELL_MARKER}) {
-			bodyRow = append(bodyRow, cell)
-		}
-		bodyRows = append(bodyRows, bodyRow)
-	}
-	widths := make([]int, len(headerRows[0]))
-	for _, row := range headerRows {
-		for column, cell := range row {
-			columnWidth := runewidth.StringWidth(string(cell))
-			if columnWidth > widths[column] {
-				widths[column] = columnWidth
-			}
-		}
-	}
-	for _, row := range bodyRows {
-		for column, cell := range row {
-			columnWidth := runewidth.StringWidth(string(cell))
-			if columnWidth > widths[column] {
-				widths[column] = columnWidth
-			}
-		}
-	}
-	for _, row := range headerRows {
-		for column, cell := range row {
-			out.WriteByte('|')
-			out.WriteByte(' ')
-			out.Write(cell)
-			for i := runewidth.StringWidth(string(cell)); i < widths[column]; i++ {
-				out.WriteByte(' ')
-			}
+	/*out.WriteString(goon.SdumpExpr(r.headers))
+	out.WriteString(goon.SdumpExpr(r.columnAligns))
+	out.WriteString(goon.SdumpExpr(r.columnWidths))
+	out.WriteString(goon.SdumpExpr(r.cells))*/
+	for column, cell := range r.headers {
+		out.WriteByte('|')
+		out.WriteByte(' ')
+		out.WriteString(cell)
+		for i := runewidth.StringWidth(string(cell)); i < r.columnWidths[column]; i++ {
 			out.WriteByte(' ')
 		}
-		out.WriteByte('|')
-		out.WriteByte('\n')
+		out.WriteByte(' ')
 	}
-	for column, width := range widths {
+	out.WriteString("|\n")
+	for column, width := range r.columnWidths {
 		out.WriteByte('|')
-		if r.tableColumnAligns[column]&blackfriday.TABLE_ALIGNMENT_LEFT != 0 {
+		if r.columnAligns[column]&blackfriday.TABLE_ALIGNMENT_LEFT != 0 {
 			out.WriteByte(':')
 		} else {
 			out.WriteByte('-')
@@ -227,28 +184,29 @@ func (r *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, 
 		for ; width > 0; width-- {
 			out.WriteByte('-')
 		}
-		if r.tableColumnAligns[column]&blackfriday.TABLE_ALIGNMENT_RIGHT != 0 {
+		if r.columnAligns[column]&blackfriday.TABLE_ALIGNMENT_RIGHT != 0 {
 			out.WriteByte(':')
 		} else {
 			out.WriteByte('-')
 		}
 	}
-	out.WriteByte('|')
-	out.WriteByte('\n')
-	for _, row := range bodyRows {
-		for column, cell := range row {
+	out.WriteString("|\n")
+	for i := 0; i < len(r.cells); {
+		for column, _ := range r.headers {
+			cell := []byte(r.cells[i])
+			i++
 			out.WriteByte('|')
 			out.WriteByte(' ')
-			switch r.tableColumnAligns[column] {
+			switch r.columnAligns[column] {
 			default:
 				fallthrough
 			case blackfriday.TABLE_ALIGNMENT_LEFT:
 				out.Write(cell)
-				for i := runewidth.StringWidth(string(cell)); i < widths[column]; i++ {
+				for i := runewidth.StringWidth(string(cell)); i < r.columnWidths[column]; i++ {
 					out.WriteByte(' ')
 				}
 			case blackfriday.TABLE_ALIGNMENT_CENTER:
-				spaces := widths[column] - runewidth.StringWidth(string(cell))
+				spaces := r.columnWidths[column] - runewidth.StringWidth(string(cell))
 				for i := 0; i < spaces/2; i++ {
 					out.WriteByte(' ')
 				}
@@ -257,31 +215,38 @@ func (r *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, 
 					out.WriteByte(' ')
 				}
 			case blackfriday.TABLE_ALIGNMENT_RIGHT:
-				for i := runewidth.StringWidth(string(cell)); i < widths[column]; i++ {
+				for i := runewidth.StringWidth(string(cell)); i < r.columnWidths[column]; i++ {
 					out.WriteByte(' ')
 				}
 				out.Write(cell)
 			}
 			out.WriteByte(' ')
 		}
-		out.WriteByte('|')
-		out.WriteByte('\n')
+		out.WriteString("|\n")
 	}
-	r.tableColumnAligns = nil
+
+	r.headers = nil
+	r.columnAligns = nil
+	r.columnWidths = nil
+	r.cells = nil
 }
 func (_ *markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
-	out.Write(text)
-	out.WriteByte(_TABLE_ROW_MARKER)
 }
 func (r *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
-	r.tableColumnAligns = append(r.tableColumnAligns, align)
-	out.Write(text)
-	out.WriteByte(_TABLE_CELL_MARKER)
+	r.columnAligns = append(r.columnAligns, align)
+	columnWidth := runewidth.StringWidth(string(text))
+	r.columnWidths = append(r.columnWidths, columnWidth)
+	r.headers = append(r.headers, string(text))
 }
-func (_ *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
-	out.Write(text)
-	out.WriteByte(_TABLE_CELL_MARKER)
+func (r *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
+	columnWidth := runewidth.StringWidth(string(text))
+	column := len(r.cells) % len(r.headers)
+	if columnWidth > r.columnWidths[column] {
+		r.columnWidths[column] = columnWidth
+	}
+	r.cells = append(r.cells, string(text))
 }
+
 func (m *markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
 	out.WriteString("<Footnotes: Not implemented.>") // TODO
 }
