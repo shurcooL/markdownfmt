@@ -18,6 +18,12 @@ type markdownRenderer struct {
 	normalTextMarker   map[*bytes.Buffer]int
 	orderedListCounter map[int]int
 	listDepth          int
+
+	// TODO: Clean these up.
+	headers      []string
+	columnAligns []int
+	columnWidths []int
+	cells        []string
 }
 
 func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
@@ -151,18 +157,96 @@ func (_ *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 	}
 	out.WriteString("\n")
 }
-func (_ *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
-	out.WriteString("<Table: Not implemented.>") // TODO
+
+func (r *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
+	doubleSpace(out)
+	/*out.WriteString(goon.SdumpExpr(r.headers))
+	out.WriteString(goon.SdumpExpr(r.columnAligns))
+	out.WriteString(goon.SdumpExpr(r.columnWidths))
+	out.WriteString(goon.SdumpExpr(r.cells))*/
+	for column, cell := range r.headers {
+		out.WriteByte('|')
+		out.WriteByte(' ')
+		out.WriteString(cell)
+		for i := runewidth.StringWidth(string(cell)); i < r.columnWidths[column]; i++ {
+			out.WriteByte(' ')
+		}
+		out.WriteByte(' ')
+	}
+	out.WriteString("|\n")
+	for column, width := range r.columnWidths {
+		out.WriteByte('|')
+		if r.columnAligns[column]&blackfriday.TABLE_ALIGNMENT_LEFT != 0 {
+			out.WriteByte(':')
+		} else {
+			out.WriteByte('-')
+		}
+		for ; width > 0; width-- {
+			out.WriteByte('-')
+		}
+		if r.columnAligns[column]&blackfriday.TABLE_ALIGNMENT_RIGHT != 0 {
+			out.WriteByte(':')
+		} else {
+			out.WriteByte('-')
+		}
+	}
+	out.WriteString("|\n")
+	for i := 0; i < len(r.cells); {
+		for column, _ := range r.headers {
+			cell := []byte(r.cells[i])
+			i++
+			out.WriteByte('|')
+			out.WriteByte(' ')
+			switch r.columnAligns[column] {
+			default:
+				fallthrough
+			case blackfriday.TABLE_ALIGNMENT_LEFT:
+				out.Write(cell)
+				for i := runewidth.StringWidth(string(cell)); i < r.columnWidths[column]; i++ {
+					out.WriteByte(' ')
+				}
+			case blackfriday.TABLE_ALIGNMENT_CENTER:
+				spaces := r.columnWidths[column] - runewidth.StringWidth(string(cell))
+				for i := 0; i < spaces/2; i++ {
+					out.WriteByte(' ')
+				}
+				out.Write(cell)
+				for i := 0; i < spaces-(spaces/2); i++ {
+					out.WriteByte(' ')
+				}
+			case blackfriday.TABLE_ALIGNMENT_RIGHT:
+				for i := runewidth.StringWidth(string(cell)); i < r.columnWidths[column]; i++ {
+					out.WriteByte(' ')
+				}
+				out.Write(cell)
+			}
+			out.WriteByte(' ')
+		}
+		out.WriteString("|\n")
+	}
+
+	r.headers = nil
+	r.columnAligns = nil
+	r.columnWidths = nil
+	r.cells = nil
 }
 func (_ *markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
-	out.WriteString("<TableRow: Not implemented.>") // TODO
 }
-func (_ *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, flags int) {
-	out.WriteString("<TableHeaderCell: Not implemented.>") // TODO
+func (r *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
+	r.columnAligns = append(r.columnAligns, align)
+	columnWidth := runewidth.StringWidth(string(text))
+	r.columnWidths = append(r.columnWidths, columnWidth)
+	r.headers = append(r.headers, string(text))
 }
-func (_ *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, flags int) {
-	out.WriteString("<TableCell: Not implemented.>") // TODO
+func (r *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
+	columnWidth := runewidth.StringWidth(string(text))
+	column := len(r.cells) % len(r.headers)
+	if columnWidth > r.columnWidths[column] {
+		r.columnWidths[column] = columnWidth
+	}
+	r.cells = append(r.cells, string(text))
 }
+
 func (m *markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
 	out.WriteString("<Footnotes: Not implemented.>") // TODO
 }
@@ -354,7 +438,7 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	// GitHub Flavored Markdown-like extensions.
 	extensions := 0
 	extensions |= blackfriday.EXTENSION_NO_INTRA_EMPHASIS
-	//extensions |= blackfriday.EXTENSION_TABLES // TODO: Implement.
+	extensions |= blackfriday.EXTENSION_TABLES
 	extensions |= blackfriday.EXTENSION_FENCED_CODE
 	extensions |= blackfriday.EXTENSION_AUTOLINK
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
