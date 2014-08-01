@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"fmt"
 
-	. "gist.github.com/6418290.git"
+	. "github.com/shurcooL/go/gists/gist6418290"
 )
 
 type debugRenderer struct {
