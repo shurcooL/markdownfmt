@@ -91,6 +91,8 @@ func (_ *markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
 	out.Write(text)
 	out.WriteByte('\n')
 }
+func (_ *markdownRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
+}
 func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 	doubleSpace(out)

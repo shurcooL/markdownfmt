@@ -24,6 +24,9 @@ func (_ *debugRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 func (_ *debugRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
 	fmt.Println(GetParentFuncArgsAsString(string(text)))
 }
+func (_ *debugRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
+	fmt.Println(GetParentFuncArgsAsString(string(text)))
+}
 func (_ *debugRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	fmt.Println(GetParentFuncArgsAsString(text(), level, id))
 }

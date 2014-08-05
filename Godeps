@@ -4,18 +4,18 @@
 	"Deps": [
 		{
 			"ImportPath": "code.google.com/p/go.net/html",
-			"Comment": "null-136",
-			"Rev": "28ff664507e453c4455b8c65e701bbe2b2ac980d"
+			"Comment": "null-143",
+			"Rev": "6a58d15273e127ff2697fa5a848435af0ea1255d"
 		},
 		{
 			"ImportPath": "github.com/mattn/go-runewidth",
-			"Comment": "travisish-20-g4dc7eb8",
-			"Rev": "4dc7eb8e2a9a7dff92e8fd35b2b65206a768ab7b"
+			"Comment": "travisish-23-g36f63b8",
+			"Rev": "36f63b8223e701c16f36010094fb6e84ffbaf8e0"
 		},
 		{
 			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.1-130-g7680f7f",
-			"Rev": "7680f7fdeb0d57222f62d02802af5e3585722384"
+			"Comment": "v1.1-136-g2e7d690",
+			"Rev": "2e7d690972283d45aadc7a5ea304841e26529433"
 		}
 	]
 }
