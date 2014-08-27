@@ -194,6 +194,13 @@ The outer pipes (|) are optional, and you don't need to make the raw Markdown li
 | *Still*  | ` + "`renders`" + ` | **nicely** |
 | 1        | 2         | 3          |
 
+Line Breaks
+===========
+
+Some text with two trailing spaces for linebreak.  ` + `
+More text immediately after.  ` + `
+Useful for writing poems.` + `
+
 Done.
 `
 
@@ -233,6 +240,25 @@ aaa/あああ
 aaa/あああ
 ----------
 `)
+
+	output, err := markdown.Process("", input, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	diff, err := diff(expected, output)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if len(diff) != 0 {
+		t.Errorf("Difference of %d lines:\n%s", bytes.Count(diff, []byte("\n")), string(diff))
+	}
+}
+
+func TestLineBreak(t *testing.T) {
+	input := []byte("Some text with two trailing spaces for linebreak.  \nMore      spaced      **text**      *immediately*      after      that.         \nMore than two spaces become two.\n")
+	expected := []byte("Some text with two trailing spaces for linebreak.  \nMore spaced **text** *immediately* after that.  \nMore than two spaces become two.\n")
 
 	output, err := markdown.Process("", input, nil)
 	if err != nil {

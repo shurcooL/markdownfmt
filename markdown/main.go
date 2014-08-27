@@ -286,7 +286,7 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, a
 	out.WriteString(")")
 }
 func (_ *markdownRenderer) LineBreak(out *bytes.Buffer) {
-	out.WriteByte('\n')
+	out.WriteString("  \n")
 }
 func (_ *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, content []byte) {
 	out.WriteString("[")
