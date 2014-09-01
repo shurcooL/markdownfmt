@@ -1,11 +1,11 @@
 {
 	"ImportPath": "github.com/shurcooL/markdownfmt",
-	"GoVersion": "go1.3",
+	"GoVersion": "go1.3.1",
 	"Deps": [
 		{
 			"ImportPath": "code.google.com/p/go.net/html",
-			"Comment": "null-143",
-			"Rev": "6a58d15273e127ff2697fa5a848435af0ea1255d"
+			"Comment": "null-144",
+			"Rev": "ad01a6fcc8a19d3a4478c836895ffe883bd2ceab"
 		},
 		{
 			"ImportPath": "github.com/mattn/go-runewidth",
@@ -14,8 +14,8 @@
 		},
 		{
 			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.1-136-g2e7d690",
-			"Rev": "2e7d690972283d45aadc7a5ea304841e26529433"
+			"Comment": "v1.2-10-g44a39c1",
+			"Rev": "44a39c16c6b85809f8c2663bdb8ddbced1ffdee8"
 		}
 	]
 }
