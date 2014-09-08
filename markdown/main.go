@@ -314,7 +314,7 @@ func (_ *markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 
 func isHtmlNeedEscaping(text []byte) bool {
 	switch s := string(text); s {
-	case "<", ">":
+	case "<", ">", "`":
 		return true
 	default:
 		return false

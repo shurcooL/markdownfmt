@@ -132,6 +132,8 @@ This (**should** be *fine*).
 
 A \> B.
 
+It's possible to backslash escape \<html\> tags and \` + "`" + `backticks\` + "`" + `. They are treated as text.
+
 ---
 
 http://example.com
