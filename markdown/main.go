@@ -141,10 +141,10 @@ func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) 
 	}*/
 	out.WriteString(strings.Repeat("\t", (mr.listDepth - 1)))
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
-		fmt.Fprintf(out, "%d. %s", mr.orderedListCounter[mr.listDepth], string(text))
+		fmt.Fprintf(out, "%d.\t%s", mr.orderedListCounter[mr.listDepth], string(text))
 		mr.orderedListCounter[mr.listDepth]++
 	} else {
-		out.WriteString("- ")
+		out.WriteString("-\t")
 		out.Write(text)
 	}
 	out.WriteString("\n")
