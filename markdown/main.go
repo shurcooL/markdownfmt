@@ -5,10 +5,10 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"os/exec"
-	"path/filepath"
-	"runtime"
 	"strings"
+
+	// TODO: Replace with "go/format" once https://codereview.appspot.com/142360043 is submitted and released.
+	"github.com/shurcooL/go/go/format"
 
 	"github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
@@ -29,7 +29,7 @@ type markdownRenderer struct {
 func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
 	switch lang {
 	case "Go", "go":
-		gofmt, err := gofmt3b(string(text))
+		gofmt, err := format.Source(text)
 		if err != nil {
 			return nil, false
 		}
@@ -382,37 +382,6 @@ func doubleSpace(out *bytes.Buffer) {
 	if out.Len() > 0 {
 		out.WriteByte('\n')
 	}
-}
-
-// TODO: Replace with go1.1's go/format
-// Actually executes gofmt binary as a new process
-// TODO: Can't use it until go/format is fixed to be consistent with gofmt, currently it strips comments out of partial Go programs
-// See: https://code.google.com/p/go/issues/detail?id=5551
-func gofmt3b(str string) ([]byte, error) {
-	cmd := exec.Command(filepath.Join(runtime.GOROOT(), "bin", "gofmt"))
-
-	// TODO: Error checking and other niceness
-	// http://stackoverflow.com/questions/13432947/exec-external-program-script-and-detect-if-it-requests-user-input
-	in, err := cmd.StdinPipe()
-	if err != nil {
-		panic(err)
-	}
-	go func() {
-		_, err = in.Write([]byte(str))
-		if err != nil {
-			panic(err)
-		}
-		err = in.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
-
-	data, err := cmd.Output()
-	if nil != err {
-		return []byte("gofmt error!\n" + str), err
-	}
-	return data, nil
 }
 
 // NewRenderer returns a Markdown renderer.
