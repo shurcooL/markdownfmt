@@ -114,6 +114,22 @@ Hmm.
 	-	Item 3a
 	-	Item 3b
 
+Large spacing...
+
+1.	An entire paragraph is written here, and bigger spacing between list items is desired. This is supported too.
+
+2.	Item 2
+
+	1.	Blah.
+
+	2.	Blah.
+
+3.	Item 3
+
+	-	Item 3a
+
+	-	Item 3b
+
 Last paragraph here.
 
 An h2 header
@@ -227,7 +243,9 @@ Nested Lists
 -	Item 1
 
 	Another paragraph inside this list item is indented just like the previous paragraph.
+
 -	Item 2
+
 	-	Item 2a
 
 		Things go here.
@@ -235,7 +253,9 @@ Nested Lists
 		> This a quote within a list.
 
 		And they stay here.
+
 	-	Item 2b
+
 -	Item 3
 
 Line Breaks

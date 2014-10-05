@@ -7,16 +7,18 @@ import (
 	"io/ioutil"
 	"strings"
 
-	// TODO: Replace with "go/format" once https://codereview.appspot.com/142360043 is submitted and released.
+	// TODO: Replace with "go/format" once Go 1.4 is released.
 	"github.com/shurcooL/go/go/format"
 
 	"github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
+	"github.com/shurcooL/go/indentwriter"
 )
 
 type markdownRenderer struct {
 	normalTextMarker   map[*bytes.Buffer]int
 	orderedListCounter map[int]int
+	paragraph          map[int]bool // Used to keep track of whether a given list item uses a paragraph for large spacing.
 	listDepth          int
 
 	// TODO: Clean these up.
@@ -139,19 +141,28 @@ func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) 
 	/*if flags&blackfriday.LIST_ITEM_CONTAINS_BLOCK != 0 {
 		doubleSpace(out)
 	}*/
-	out.WriteString(strings.Repeat("\t", (mr.listDepth - 1)))
+	//text = bytes.Replace(text, []byte("\n"), append([]byte("\n"), bytes.Repeat([]byte("\t"), 1)...), -1)
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
-		fmt.Fprintf(out, "%d.\t%s", mr.orderedListCounter[mr.listDepth], string(text))
+		fmt.Fprintf(out, "%d.", mr.orderedListCounter[mr.listDepth])
+		indentwriter.New(out, 1).Write(text)
 		mr.orderedListCounter[mr.listDepth]++
 	} else {
-		out.WriteString("-\t")
-		out.Write(text)
+		out.WriteString("-")
+		indentwriter.New(out, 1).Write(text)
 	}
 	out.WriteString("\n")
+	if mr.paragraph[mr.listDepth] {
+		if flags&blackfriday.LIST_ITEM_END_OF_LIST == 0 {
+			out.WriteString("\n")
+		}
+		mr.paragraph[mr.listDepth] = false
+	}
 }
-func (_ *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
+func (mr *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 	marker := out.Len()
 	doubleSpace(out)
+
+	mr.paragraph[mr.listDepth] = true
 
 	if !text() {
 		out.Truncate(marker)
@@ -389,6 +400,7 @@ func NewRenderer() blackfriday.Renderer {
 	return &markdownRenderer{
 		normalTextMarker:   make(map[*bytes.Buffer]int),
 		orderedListCounter: make(map[int]int),
+		paragraph:          make(map[int]bool),
 	}
 }
 
