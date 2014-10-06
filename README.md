@@ -9,7 +9,7 @@ Installation
 ------------
 
 ```bash
-$ go get -u github.com/shurcooL/markdownfmt
+go get -u github.com/shurcooL/markdownfmt
 ```
 
 Add `$GOPATH/bin` to your `$PATH` or copy `$GOPATH/bin/markdownfmt` to your `$PATH`.
@@ -27,6 +27,6 @@ usage: markdownfmt [flags] [path ...]
 Editor Plugins
 --------------
 
-- [markdown-format](https://atom.io/packages/markdown-format) for Atom.
-- Built-in in Conception.
-- Add a plugin for your favorite editor here?
+-	[markdown-format](https://atom.io/packages/markdown-format) for Atom.
+-	Built-in in Conception.
+-	Add a plugin for your favorite editor here?

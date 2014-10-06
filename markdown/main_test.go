@@ -43,8 +43,8 @@ Final paragraph.
 	//
 	//Is really new.
 	//
-	//1. Item one.
-	//2. Item TWO.
+	//1.	Item one.
+	//2.	Item TWO.
 	//
 	//Final paragraph.
 	//
@@ -85,9 +85,9 @@ Paragraphs are separated by a blank line.
 
 2nd paragraph. *Italic*, **bold**, ` + "`monospace`" + `. Itemized lists look like:
 
-- this one
-- that one
-- the other one
+-	this one
+-	that one
+-	the other one
 
 Nothing to note here.
 
@@ -97,30 +97,46 @@ Nothing to note here.
 >
 > They can span multiple paragraphs, if you like.
 
-- Item 1
-- Item 2
-	- Item 2a
-		- Item 2a
-	- Item 2b
-- Item 3
+-	Item 1
+-	Item 2
+	-	Item 2a
+		-	Item 2a
+	-	Item 2b
+-	Item 3
 
 Hmm.
 
-1. Item 1
-2. Item 2
-	1. Blah.
-	2. Blah.
-3. Item 3
-	- Item 3a
-	- Item 3b
+1.	Item 1
+2.	Item 2
+	1.	Blah.
+	2.	Blah.
+3.	Item 3
+	-	Item 3a
+	-	Item 3b
+
+Large spacing...
+
+1.	An entire paragraph is written here, and bigger spacing between list items is desired. This is supported too.
+
+2.	Item 2
+
+	1.	Blah.
+
+	2.	Blah.
+
+3.	Item 3
+
+	-	Item 3a
+
+	-	Item 3b
 
 Last paragraph here.
 
 An h2 header
 ------------
 
-- Paragraph right away.
-- **Big item**: Right away after header.
+-	Paragraph right away.
+-	**Big item**: Right away after header.
 
 [Visit GitHub!](www.github.com)
 
@@ -140,15 +156,15 @@ http://example.com
 
 Now a [link](www.github.com) in a paragraph. End with [link_underscore.go](www.github.com).
 
-- [Link](www.example.com)
+-	[Link](www.example.com)
 
 ### An h3 header
 
 Here's a numbered list:
 
-1. first item
-2. second item
-3. third item
+1.	first item
+2.	second item
+3.	third item
 
 Note again how the actual text starts at 4 columns in (4 characters from the left side). Here's a code sample:
 
@@ -195,6 +211,52 @@ The outer pipes (|) are optional, and you don't need to make the raw Markdown li
 |----------|-----------|------------|
 | *Still*  | ` + "`renders`" + ` | **nicely** |
 | 1        | 2         | 3          |
+
+Nested Lists
+============
+
+### Codeblock within list
+
+-	list1
+
+	` + "```" + `C
+	if (i == 5)
+	    break;
+	` + "```" + `
+
+### Blockquote within list
+
+-	list1
+
+	> This a quote within a list.
+
+### Table within list
+
+-	list1
+
+	| Header One | Header Two |
+	|------------|------------|
+	| Item One   | Item Two   |
+
+### Multi-level nested
+
+-	Item 1
+
+	Another paragraph inside this list item is indented just like the previous paragraph.
+
+-	Item 2
+
+	-	Item 2a
+
+		Things go here.
+
+		> This a quote within a list.
+
+		And they stay here.
+
+	-	Item 2b
+
+-	Item 3
 
 Line Breaks
 ===========
