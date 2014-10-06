@@ -1,21 +1,28 @@
 {
 	"ImportPath": "github.com/shurcooL/markdownfmt",
-	"GoVersion": "go1.3.1",
+	"GoVersion": "go1.3.3",
 	"Deps": [
 		{
-			"ImportPath": "code.google.com/p/go.net/html",
-			"Comment": "null-144",
-			"Rev": "ad01a6fcc8a19d3a4478c836895ffe883bd2ceab"
+			"ImportPath": "github.com/bradfitz/iter",
+			"Rev": "454541ec3da2a73fc34fd049b19ee5777bf19345"
 		},
 		{
 			"ImportPath": "github.com/mattn/go-runewidth",
-			"Comment": "travisish-23-g36f63b8",
-			"Rev": "36f63b8223e701c16f36010094fb6e84ffbaf8e0"
+			"Comment": "travisish-24-ge924e65",
+			"Rev": "e924e6534529fd53643e9791bd0490eca65e902b"
 		},
 		{
 			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.2-10-g44a39c1",
-			"Rev": "44a39c16c6b85809f8c2663bdb8ddbced1ffdee8"
+			"Comment": "v1.2-17-g05b8cef",
+			"Rev": "05b8cefd6a3cd87b81adb83479f5faadc0df2a67"
+		},
+		{
+			"ImportPath": "github.com/shurcooL/go/go/format",
+			"Rev": "16a4e8f8845f0d6fd857c7cd3c88db9834b6fa64"
+		},
+		{
+			"ImportPath": "github.com/shurcooL/go/indentwriter",
+			"Rev": "16a4e8f8845f0d6fd857c7cd3c88db9834b6fa64"
 		}
 	]
 }
