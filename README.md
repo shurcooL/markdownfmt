@@ -1,5 +1,5 @@
-markdownfmt
-===========
+markdownfmt [![Build Status](https://travis-ci.org/shurcooL/markdownfmt.svg?branch=master)](https://travis-ci.org/shurcooL/markdownfmt)
+=======================================================================================================================================
 
 Like `gofmt`, but for Markdown.
 

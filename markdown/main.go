@@ -20,6 +20,7 @@ type markdownRenderer struct {
 	orderedListCounter map[int]int
 	paragraph          map[int]bool // Used to keep track of whether a given list item uses a paragraph for large spacing.
 	listDepth          int
+	lastNormalText     string
 
 	// TODO: Clean these up.
 	headers      []string
@@ -323,9 +324,34 @@ func (_ *markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 	out.WriteString("<FootnoteRef: Not implemented.>") // TODO
 }
 
-func isHtmlNeedEscaping(text []byte) bool {
-	switch s := string(text); s {
-	case "<", ">", "`":
+func isNumber(data []byte) bool {
+	for _, b := range data {
+		if b < '0' || b > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+func needsEscaping(text []byte, lastNormalText string) bool {
+	switch string(text) {
+	case `\`,
+		"`",
+		"*",
+		"_",
+		"{", "}",
+		"[", "]",
+		"(", ")",
+		"#",
+		"+",
+		"-":
+		return true
+	case "!":
+		return false
+	case ".":
+		// Return true if number, because a period after a number must be escaped to not get parsed as an ordered list.
+		return isNumber([]byte(lastNormalText))
+	case "<", ">":
 		return true
 	default:
 		return false
@@ -337,9 +363,11 @@ func (_ *markdownRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	out.Write(entity)
 }
 func (mr *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
-	if isHtmlNeedEscaping(text) {
+	normalText := string(text)
+	if needsEscaping(text, mr.lastNormalText) {
 		text = append([]byte("\\"), text...)
 	}
+	mr.lastNormalText = normalText
 	if string(text) == "\n" { // TODO: See if this can be cleaned up... It's needed for lists.
 		return
 	}

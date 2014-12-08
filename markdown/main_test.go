@@ -150,6 +150,12 @@ A \> B.
 
 It's possible to backslash escape \<html\> tags and \` + "`" + `backticks\` + "`" + `. They are treated as text.
 
+1986\. What a great season.
+
+The year was 1986. What a great season.
+
+\*literal asterisks\*.
+
 ---
 
 http://example.com
