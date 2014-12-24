@@ -4,11 +4,9 @@ package markdown
 import (
 	"bytes"
 	"fmt"
+	"go/format"
 	"io/ioutil"
 	"strings"
-
-	// TODO: Replace with "go/format" once Go 1.4 is released.
-	"github.com/shurcooL/go/go/format"
 
 	"github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
