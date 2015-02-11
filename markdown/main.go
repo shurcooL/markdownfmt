@@ -103,24 +103,13 @@ func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level in
 	marker := out.Len()
 	doubleSpace(out)
 
-	if level >= 3 {
-		fmt.Fprint(out, strings.Repeat("#", level), " ")
-	}
+	fmt.Fprint(out, strings.Repeat("#", level), " ")
 
-	textMarker := out.Len()
 	if !text() {
 		out.Truncate(marker)
 		return
 	}
 
-	switch level {
-	case 1:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("=", len))
-	case 2:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("-", len))
-	}
 	out.WriteString("\n")
 }
 func (_ *markdownRenderer) HRule(out *bytes.Buffer) {
