@@ -1,5 +1,5 @@
 // markdownfmt formats Markdown.
-package main
+package main // import "github.com/shurcooL/markdownfmt"
 
 import (
 	"bytes"
