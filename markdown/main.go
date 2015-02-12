@@ -58,24 +58,26 @@ func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string
 		if len(elt) == 0 {
 			continue
 		}
-		out.WriteString("```")
-		out.WriteString(elt)
+		out.WriteString("```" + elt + "\n")
 		count++
 		break
 	}
 
-	if count == 0 {
-		out.WriteString("```")
-	}
-	out.WriteString("\n")
-
 	if formattedCode, ok := formatCode(lang, text); ok {
+		if count == 0 {
+			formattedCode = []byte("\t" + strings.TrimRight(strings.Replace(string(formattedCode), "\n", "\n\t", -1), "\t"))
+		}
 		out.Write(formattedCode)
 	} else {
+		if count == 0 {
+			text = []byte("\t" + strings.TrimRight(strings.Replace(string(text), "\n", "\n\t", -1), "\t"))
+		}
 		out.Write(text)
 	}
 
-	out.WriteString("```\n")
+	if count != 0 {
+		out.WriteString("```\n")
+	}
 }
 func (_ *markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
