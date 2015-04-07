@@ -345,6 +345,46 @@ func TestLineBreak(t *testing.T) {
 	}
 }
 
+func TestSpaceIndent(t *testing.T) {
+	input := []byte(`Unordered:
+
+- item1
+- item2
+
+Ordered:
+
+1. item1
+2. item2
+`)
+	expected := []byte(`Unordered:
+
+-   item1
+-   item2
+
+Ordered:
+
+1.  item1
+2.  item2
+`)
+	opt := &markdown.Options{
+		PadChar:  ' ',
+		PadWidth: 4,
+	}
+	output, err := markdown.Process("", input, opt)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	diff, err := diff(expected, output)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(diff) != 0 {
+		t.Errorf("Difference of %d lines:\n%s", bytes.Count(diff, []byte("\n")), string(diff))
+	}
+}
+
 // TODO: Factor out.
 func diff(b1, b2 []byte) (data []byte, err error) {
 	f1, err := ioutil.TempFile("", "markdownfmt")

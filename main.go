@@ -19,9 +19,11 @@ import (
 
 var (
 	// Main operation modes.
-	list   = flag.Bool("l", false, "list files whose formatting differs from markdownfmt's")
-	write  = flag.Bool("w", false, "write result to (source) file instead of stdout")
-	doDiff = flag.Bool("d", false, "display diffs instead of rewriting files")
+	list        = flag.Bool("l", false, "list files whose formatting differs from markdownfmt's")
+	write       = flag.Bool("w", false, "write result to (source) file instead of stdout")
+	doDiff      = flag.Bool("d", false, "display diffs instead of rewriting files")
+	indent      = flag.String("indent", "tab", "set indentation type. options: tab, space")
+	indentWidth = flag.Uint("indentwidth", 4, "set indentation width")
 
 	exitCode = 0
 )
@@ -58,7 +60,22 @@ func processFile(filename string, in io.Reader, out io.Writer, stdin bool) error
 		return err
 	}
 
-	res, err := markdown.Process(filename, src, nil)
+	var padchar byte
+	switch *indent {
+	case "tab":
+		padchar = '\t'
+	case "space":
+		padchar = ' '
+	default:
+		return fmt.Errorf("unknown indentation type: '%s'", *indent)
+	}
+
+	opt := &markdown.Options{
+		PadChar:  padchar,
+		PadWidth: int(*indentWidth),
+	}
+
+	res, err := markdown.Process(filename, src, opt)
 	if err != nil {
 		return err
 	}
