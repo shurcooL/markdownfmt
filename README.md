@@ -20,6 +20,8 @@ Usage
 ```
 usage: markdownfmt [flags] [path ...]
   -d=false: display diffs instead of rewriting files
+  -indent="tab": set indentation type. options: tab, space
+  -indentwidth=4: set indentation width
   -l=false: list files whose formatting differs from markdownfmt's
   -w=false: write result to (source) file instead of stdout
 ```

@@ -7,6 +7,7 @@ import (
 	"go/format"
 	"io/ioutil"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
@@ -19,6 +20,10 @@ type markdownRenderer struct {
 	paragraph          map[int]bool // Used to keep track of whether a given list item uses a paragraph for large spacing.
 	listDepth          int
 	lastNormalText     string
+
+	// Indentation options
+	padchar  byte
+	padwidth int
 
 	// TODO: Clean these up.
 	headers      []string
@@ -141,14 +146,22 @@ func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) 
 		doubleSpace(out)
 	}*/
 	//text = bytes.Replace(text, []byte("\n"), append([]byte("\n"), bytes.Repeat([]byte("\t"), 1)...), -1)
+	w := new(tabwriter.Writer)
+	if mr.padchar == '\t' {
+		w.Init(out, 0, mr.padwidth, 1, mr.padchar, 0)
+	} else {
+		w.Init(out, mr.padwidth, 0, 1, mr.padchar, 0)
+	}
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
-		fmt.Fprintf(out, "%d.", mr.orderedListCounter[mr.listDepth])
-		indentwriter.New(out, 1).Write(text)
+		fmt.Fprintf(w, "%d.", mr.orderedListCounter[mr.listDepth])
+		indentwriter.New(w, 1).Write(text)
 		mr.orderedListCounter[mr.listDepth]++
 	} else {
-		out.WriteString("-")
-		indentwriter.New(out, 1).Write(text)
+		fmt.Fprint(w, "-")
+		indentwriter.New(w, 1).Write(text)
 	}
+	w.Flush()
+
 	out.WriteString("\n")
 	if mr.paragraph[mr.listDepth] {
 		if flags&blackfriday.LIST_ITEM_END_OF_LIST == 0 {
@@ -422,22 +435,36 @@ func doubleSpace(out *bytes.Buffer) {
 }
 
 // NewRenderer returns a Markdown renderer.
-func NewRenderer() blackfriday.Renderer {
+func NewRenderer(padchar byte, padwidth int) blackfriday.Renderer {
 	return &markdownRenderer{
 		normalTextMarker:   make(map[*bytes.Buffer]int),
 		orderedListCounter: make(map[int]int),
 		paragraph:          make(map[int]bool),
+		padchar:            padchar,
+		padwidth:           padwidth,
 	}
 }
 
 // Options specifies options for formatting.
 type Options struct {
-	// Currently none.
+	PadChar  byte
+	PadWidth int
+}
+
+func DefaultOptions() *Options {
+	return &Options{
+		PadChar:  '\t',
+		PadWidth: 4,
+	}
 }
 
 // Process formats Markdown.
 // If opt is nil the defaults are used.
 func Process(filename string, src []byte, opt *Options) ([]byte, error) {
+	// Set opt to default if nil
+	if opt == nil {
+		opt = DefaultOptions()
+	}
 	// Get source.
 	text, err := readSource(filename, src)
 	if err != nil {
@@ -454,7 +481,7 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
 	//extensions |= blackfriday.EXTENSION_HARD_LINE_BREAK
 
-	output := blackfriday.Markdown(text, NewRenderer(), extensions)
+	output := blackfriday.Markdown(text, NewRenderer(opt.PadChar, opt.PadWidth), extensions)
 	return output, nil
 }
 
