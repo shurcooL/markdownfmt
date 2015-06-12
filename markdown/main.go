@@ -437,6 +437,7 @@ type Options struct {
 
 // Process formats Markdown.
 // If opt is nil the defaults are used.
+// Error can only occur when reading input from filename rather than src.
 func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	// Get source.
 	text, err := readSource(filename, src)
