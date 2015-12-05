@@ -30,3 +30,8 @@ Editor Plugins
 -	[markdown-format](https://atom.io/packages/markdown-format) for Atom.
 -	Built-in in Conception.
 -	Add a plugin for your favorite editor here?
+
+License
+-------
+
+-	[MIT License](http://opensource.org/licenses/mit-license.php)
