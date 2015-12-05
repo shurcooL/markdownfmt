@@ -36,21 +36,21 @@ Final paragraph.
 	os.Stdout.Write(output)
 
 	// Output:
-	//Title
-	//=====
+	// Title
+	// =====
 	//
-	//This is a new paragraph. I wonder if I have too many spaces. What about new paragraph. But the next one...
+	// This is a new paragraph. I wonder if I have too many spaces. What about new paragraph. But the next one...
 	//
-	//Is really new.
+	// Is really new.
 	//
-	//1.	Item one.
-	//2.	Item TWO.
+	// 1.	Item one.
+	// 2.	Item TWO.
 	//
-	//Final paragraph.
+	// Final paragraph.
 	//
 }
 
-func Example2() {
+func Example_2() {
 	input := []byte(`Title
 ==
 
@@ -68,13 +68,13 @@ How about ` + "`this`" + ` and other stuff like *italic*, **bold** and ***super 
 	os.Stdout.Write(output)
 
 	// Output:
-	//Title
-	//=====
+	// Title
+	// =====
 	//
-	//Subtitle
-	//--------
+	// Subtitle
+	// --------
 	//
-	//How about `this` and other stuff like *italic*, **bold** and ***super extra***.
+	// How about `this` and other stuff like *italic*, **bold** and ***super extra***.
 	//
 }
 
