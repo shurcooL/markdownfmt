@@ -204,7 +204,7 @@ func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte,
 	}
 	out.WriteString("|\n")
 	for i := 0; i < len(mr.cells); {
-		for column, _ := range mr.headers {
+		for column := range mr.headers {
 			cell := []byte(mr.cells[i])
 			i++
 			out.WriteByte('|')
