@@ -50,7 +50,7 @@ Final paragraph.
 	//
 }
 
-func Example_2() {
+func Example_two() {
 	input := []byte(`Title
 ==
 
