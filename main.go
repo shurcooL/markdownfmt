@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/shurcooL/markdownfmt/markdown"
@@ -106,8 +105,6 @@ func walkDir(path string) {
 }
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	// call markdownfmtMain in a separate function
 	// so that it can use defer and have them
 	// run before the exit.
