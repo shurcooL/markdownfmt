@@ -345,6 +345,79 @@ func TestLineBreak(t *testing.T) {
 	}
 }
 
+// https://github.com/shurcooL/markdownfmt/issues/20
+func TestSuccessiveLines(t *testing.T) {
+	input := []byte(`text
+text
+
+[link](https://github.com)
+text
+
+*italic*
+text
+
+**bold**
+text
+
+***massive***
+text
+
+` + "`" + `noformat` + "`" + `
+text
+
+text
+[link](https://github.com)
+
+text
+*italic*
+
+text
+**bold**
+
+text
+***massive***
+
+text
+` + "`" + `noformat` + "`" + `
+`)
+	expected := []byte(`text text
+
+[link](https://github.com) text
+
+*italic* text
+
+**bold** text
+
+***massive*** text
+
+` + "`" + `noformat` + "`" + ` text
+
+text [link](https://github.com)
+
+text *italic*
+
+text **bold**
+
+text ***massive***
+
+text ` + "`" + `noformat` + "`" + `
+`)
+
+	output, err := markdown.Process("", input, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	diff, err := diff(expected, output)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if len(diff) != 0 {
+		t.Errorf("Difference of %d lines:\n%s", bytes.Count(diff, []byte("\n")), string(diff))
+	}
+}
+
 // TODO: Factor out.
 func diff(b1, b2 []byte) (data []byte, err error) {
 	f1, err := ioutil.TempFile("", "markdownfmt")

@@ -366,7 +366,7 @@ func (mr *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
 		text = append([]byte("\\"), text...)
 	}
 	mr.lastNormalText = normalText
-	if string(text) == "\n" { // TODO: See if this can be cleaned up... It's needed for lists.
+	if mr.listDepth > 0 && string(text) == "\n" { // TODO: See if this can be cleaned up... It's needed for lists.
 		return
 	}
 	cleanString := cleanWithoutTrim(string(text))
