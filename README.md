@@ -28,6 +28,7 @@ Editor Plugins
 --------------
 
 -	[markdown-format](https://atom.io/packages/markdown-format) for Atom.
+-	[vim-markdownfmt](https://github.com/moorereason/vim-markdownfmt) for Vim.
 -	Built-in in Conception.
 -	Add a plugin for your favorite editor here?
 
