@@ -5,7 +5,7 @@ Like `gofmt`, but for Markdown.
 
 ![Markdown Format Demo](https://github.com/shurcooL/atom-markdown-format/blob/master/Demo.gif?raw=true)
 
-Note that `markdownfmt` works with pure Markdown files. If you want to use it with Markdown files that have YAML headers, consider a [fork that adds support for YAML headers](#alternatives).
+Note that `markdownfmt` works with pure Markdown files. If you want to use it with Markdown files that have front matter, consider one of [alternatives](#alternatives) that supports that.
 
 Installation
 ------------
@@ -37,7 +37,7 @@ Editor Plugins
 Alternatives
 ------------
 
--	[`mdfmt`](https://github.com/moorereason/mdfmt) - Like `gofmt`, but for Markdown with front matter.
+-	[`mdfmt`](https://github.com/moorereason/mdfmt) - Fork of `markdownfmt` that adds front matter support.
 
 License
 -------
