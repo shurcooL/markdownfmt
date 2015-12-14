@@ -37,7 +37,7 @@ Editor Plugins
 Alternatives
 ------------
 
-- [`mdfmt`](https://github.com/moorereason/mdfmt) - Like `gofmt`, but for Markdown with front matter.
+-	[`mdfmt`](https://github.com/moorereason/mdfmt) - Like `gofmt`, but for Markdown with front matter.
 
 License
 -------
