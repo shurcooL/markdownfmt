@@ -146,6 +146,7 @@ func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) 
 		indentwriter.New(out, 1).Write(text)
 		mr.orderedListCounter[mr.listDepth]++
 	} else if flags&blackfriday.LIST_TYPE_TERM != 0 {
+		out.WriteString("\n")
 		indentwriter.New(out, 0).Write(text)
 	} else if flags&blackfriday.LIST_TYPE_DEFINITION != 0 {
 		out.WriteString(":")
