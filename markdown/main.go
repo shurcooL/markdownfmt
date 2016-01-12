@@ -145,6 +145,11 @@ func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) 
 		fmt.Fprintf(out, "%d.", mr.orderedListCounter[mr.listDepth])
 		indentwriter.New(out, 1).Write(text)
 		mr.orderedListCounter[mr.listDepth]++
+	} else if flags&blackfriday.LIST_TYPE_TERM != 0 {
+		indentwriter.New(out, 0).Write(text)
+	} else if flags&blackfriday.LIST_TYPE_DEFINITION != 0 {
+		out.WriteString(":")
+		indentwriter.New(out, 1).Write(text)
 	} else {
 		out.WriteString("-")
 		indentwriter.New(out, 1).Write(text)
@@ -453,6 +458,7 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	extensions |= blackfriday.EXTENSION_AUTOLINK
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
 	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
+	extensions |= blackfriday.EXTENSION_DEFINITION_LISTS
 	//extensions |= blackfriday.EXTENSION_HARD_LINE_BREAK
 
 	output := blackfriday.Markdown(text, NewRenderer(), extensions)
