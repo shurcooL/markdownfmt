@@ -25,6 +25,11 @@ type markdownRenderer struct {
 	columnAligns []int
 	columnWidths []int
 	cells        []string
+
+	opt Options
+
+	// stringWidth is used internally to calculate visual width of a string.
+	stringWidth func(s string) (width int)
 }
 
 func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
@@ -94,7 +99,7 @@ func (_ *markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
 }
 func (_ *markdownRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
 }
-func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
+func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 	doubleSpace(out)
 
@@ -110,10 +115,10 @@ func (_ *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int
 
 	switch level {
 	case 1:
-		len := runewidth.StringWidth(out.String()[textMarker:])
+		len := mr.stringWidth(out.String()[textMarker:])
 		fmt.Fprint(out, "\n", strings.Repeat("=", len))
 	case 2:
-		len := runewidth.StringWidth(out.String()[textMarker:])
+		len := mr.stringWidth(out.String()[textMarker:])
 		fmt.Fprint(out, "\n", strings.Repeat("-", len))
 	}
 	out.WriteString("\n")
@@ -172,7 +177,7 @@ func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte,
 		out.WriteByte('|')
 		out.WriteByte(' ')
 		out.WriteString(cell)
-		for i := runewidth.StringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
+		for i := mr.stringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
 			out.WriteByte(' ')
 		}
 		out.WriteByte(' ')
@@ -206,11 +211,11 @@ func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte,
 				fallthrough
 			case blackfriday.TABLE_ALIGNMENT_LEFT:
 				out.Write(cell)
-				for i := runewidth.StringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
+				for i := mr.stringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
 					out.WriteByte(' ')
 				}
 			case blackfriday.TABLE_ALIGNMENT_CENTER:
-				spaces := mr.columnWidths[column] - runewidth.StringWidth(string(cell))
+				spaces := mr.columnWidths[column] - mr.stringWidth(string(cell))
 				for i := 0; i < spaces/2; i++ {
 					out.WriteByte(' ')
 				}
@@ -219,7 +224,7 @@ func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte,
 					out.WriteByte(' ')
 				}
 			case blackfriday.TABLE_ALIGNMENT_RIGHT:
-				for i := runewidth.StringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
+				for i := mr.stringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
 					out.WriteByte(' ')
 				}
 				out.Write(cell)
@@ -238,12 +243,12 @@ func (_ *markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
 }
 func (mr *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
 	mr.columnAligns = append(mr.columnAligns, align)
-	columnWidth := runewidth.StringWidth(string(text))
+	columnWidth := mr.stringWidth(string(text))
 	mr.columnWidths = append(mr.columnWidths, columnWidth)
 	mr.headers = append(mr.headers, string(text))
 }
 func (mr *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int) {
-	columnWidth := runewidth.StringWidth(string(text))
+	columnWidth := mr.stringWidth(string(text))
 	column := len(mr.cells) % len(mr.headers)
 	if columnWidth > mr.columnWidths[column] {
 		mr.columnWidths[column] = columnWidth
@@ -267,10 +272,16 @@ func (_ *markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
 	out.Write(text)
 	out.WriteByte('`')
 }
-func (_ *markdownRenderer) DoubleEmphasis(out *bytes.Buffer, text []byte) {
+func (mr *markdownRenderer) DoubleEmphasis(out *bytes.Buffer, text []byte) {
+	if mr.opt.Terminal {
+		out.WriteString("\x1b[1m") // Bold.
+	}
 	out.WriteString("**")
 	out.Write(text)
 	out.WriteString("**")
+	if mr.opt.Terminal {
+		out.WriteString("\x1b[0m") // Reset.
+	}
 }
 func (_ *markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	if len(text) == 0 {
@@ -413,18 +424,39 @@ func doubleSpace(out *bytes.Buffer) {
 	}
 }
 
+// terminalStringWidth returns width of s, takint into account possible ANSI escape codes
+// (which don't count towards string width).
+func terminalStringWidth(s string) (width int) {
+	width = runewidth.StringWidth(s)
+	width -= strings.Count(s, "\x1b[1m") * len("\x1b[1m") // HACK, TODO: Find a better way of doing this.
+	width -= strings.Count(s, "\x1b[0m") * len("\x1b[0m") // HACK, TODO: Find a better way of doing this.
+	return width
+}
+
 // NewRenderer returns a Markdown renderer.
-func NewRenderer() blackfriday.Renderer {
-	return &markdownRenderer{
+// If opt is nil the defaults are used.
+func NewRenderer(opt *Options) blackfriday.Renderer {
+	mr := &markdownRenderer{
 		normalTextMarker:   make(map[*bytes.Buffer]int),
 		orderedListCounter: make(map[int]int),
 		paragraph:          make(map[int]bool),
 	}
+	if opt != nil {
+		mr.opt = *opt
+	}
+	switch mr.opt.Terminal {
+	case false:
+		mr.stringWidth = runewidth.StringWidth
+	case true:
+		mr.stringWidth = terminalStringWidth
+	}
+	return mr
 }
 
 // Options specifies options for formatting.
 type Options struct {
-	// Currently none.
+	// Terminal specifies if ANSI escape codes are emitted for styling.
+	Terminal bool
 }
 
 // Process formats Markdown.
@@ -446,7 +478,7 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
 	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
 
-	output := blackfriday.Markdown(text, NewRenderer(), extensions)
+	output := blackfriday.Markdown(text, NewRenderer(opt), extensions)
 	return output, nil
 }
 

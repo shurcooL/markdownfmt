@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/shurcooL/markdownfmt/markdown"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var (
@@ -57,7 +58,8 @@ func processFile(filename string, in io.Reader, out io.Writer, stdin bool) error
 		return err
 	}
 
-	res, err := markdown.Process(filename, src, nil)
+	stdout := int(os.Stdout.Fd())
+	res, err := markdown.Process(filename, src, &markdown.Options{Terminal: terminal.IsTerminal(stdout)})
 	if err != nil {
 		return err
 	}
