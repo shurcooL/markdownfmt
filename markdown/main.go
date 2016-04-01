@@ -44,7 +44,7 @@ func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
 func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 	doubleSpace(out)
 
-	// parse out the language name
+	// Parse out the language name.
 	count := 0
 	for _, elt := range strings.Fields(lang) {
 		if elt[0] == '.' {
@@ -137,10 +137,6 @@ func (mr *markdownRenderer) List(out *bytes.Buffer, text func() bool, flags int)
 	}
 }
 func (mr *markdownRenderer) ListItem(out *bytes.Buffer, text []byte, flags int) {
-	/*if flags&blackfriday.LIST_ITEM_CONTAINS_BLOCK != 0 {
-		doubleSpace(out)
-	}*/
-	//text = bytes.Replace(text, []byte("\n"), append([]byte("\n"), bytes.Repeat([]byte("\t"), 1)...), -1)
 	if flags&blackfriday.LIST_TYPE_ORDERED != 0 {
 		fmt.Fprintf(out, "%d.", mr.orderedListCounter[mr.listDepth])
 		indentwriter.New(out, 1).Write(text)
@@ -172,10 +168,6 @@ func (mr *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 
 func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
 	doubleSpace(out)
-	/*out.WriteString(goon.SdumpExpr(mr.headers))
-	out.WriteString(goon.SdumpExpr(mr.columnAligns))
-	out.WriteString(goon.SdumpExpr(mr.columnWidths))
-	out.WriteString(goon.SdumpExpr(mr.cells))*/
 	for column, cell := range mr.headers {
 		out.WriteByte('|')
 		out.WriteByte(' ')
@@ -356,7 +348,7 @@ func needsEscaping(text []byte, lastNormalText string) bool {
 	}
 }
 
-// Low-level callbacks
+// Low-level callbacks.
 func (_ *markdownRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	out.Write(entity)
 }
@@ -398,7 +390,7 @@ func (mr *markdownRenderer) skipSpaceIfNeededNormalText(out *bytes.Buffer, clean
 	return mr.normalTextMarker[out] == out.Len()
 }
 
-// Like clean, but doesn't trim blanks.
+// cleanWithoutTrim is like clean, but doesn't trim blanks.
 func cleanWithoutTrim(s string) string {
 	var b []byte
 	var p byte
@@ -453,7 +445,6 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	extensions |= blackfriday.EXTENSION_AUTOLINK
 	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
 	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
-	//extensions |= blackfriday.EXTENSION_HARD_LINE_BREAK
 
 	output := blackfriday.Markdown(text, NewRenderer(), extensions)
 	return output, nil
