@@ -440,14 +440,13 @@ func NewRenderer(opt *Options) blackfriday.Renderer {
 		normalTextMarker:   make(map[*bytes.Buffer]int),
 		orderedListCounter: make(map[int]int),
 		paragraph:          make(map[int]bool),
+
+		stringWidth: runewidth.StringWidth,
 	}
 	if opt != nil {
 		mr.opt = *opt
 	}
-	switch mr.opt.Terminal {
-	case false:
-		mr.stringWidth = runewidth.StringWidth
-	case true:
+	if mr.opt.Terminal {
 		mr.stringWidth = terminalStringWidth
 	}
 	return mr
