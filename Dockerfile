@@ -10,7 +10,8 @@ RUN git clone \
 
 ENV GOPKG github.com/shurcooL/markdownfmt
 
-RUN go get -v -d $GOPKG
+RUN go get -v -d $GOPKG \
+	&& rm -rv "$GOPATH/src/$GOPKG"
 
 WORKDIR $GOPATH/src/$GOPKG
 COPY . $GOPATH/src/$GOPKG
