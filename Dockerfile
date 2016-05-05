@@ -2,8 +2,9 @@ FROM golang:1.4
 
 ENV BLACKFRIDAY_VERSION v1.4
 
-RUN git clone --single-branch \
+RUN git clone \
 		-b $BLACKFRIDAY_VERSION \
+		--depth 1 \
 		https://github.com/russross/blackfriday.git \
 		$GOPATH/src/github.com/russross/blackfriday
 
