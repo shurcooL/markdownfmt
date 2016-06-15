@@ -424,7 +424,7 @@ func doubleSpace(out *bytes.Buffer) {
 	}
 }
 
-// terminalStringWidth returns width of s, takint into account possible ANSI escape codes
+// terminalStringWidth returns width of s, taking into account possible ANSI escape codes
 // (which don't count towards string width).
 func terminalStringWidth(s string) (width int) {
 	width = runewidth.StringWidth(s)
