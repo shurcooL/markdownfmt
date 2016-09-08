@@ -478,6 +478,11 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
 
 	output := blackfriday.Markdown(text, NewRenderer(opt), extensions)
+	// HACK: Temporary tech-debt-y fix for #30.
+	// TODO: Remove after https://github.com/russross/blackfriday/pull/305 is merged.
+	if bytes.HasSuffix(output, []byte("\n\n")) {
+		output = output[:len(output)-1] // Keep a single newline at end of document.
+	}
 	return output, nil
 }
 

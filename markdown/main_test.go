@@ -345,6 +345,31 @@ func TestLineBreak(t *testing.T) {
 	}
 }
 
+// TestDoubleSpacedListEnd tests that when the document ends with a double spaced list,
+// an extra blank line isn't appended. See issue #30.
+func TestDoubleSpacedListEnd(t *testing.T) {
+	const reference = `-	An item.
+
+-	Another time with a blank line in between.
+`
+	input := []byte(reference)
+	expected := []byte(reference)
+
+	output, err := markdown.Process("", input, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	diff, err := diff(expected, output)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if len(diff) != 0 {
+		t.Errorf("Difference of %d lines:\n%s", bytes.Count(diff, []byte("\n")), string(diff))
+	}
+}
+
 // https://github.com/shurcooL/markdownfmt/issues/20
 func TestSuccessiveLines(t *testing.T) {
 	input := []byte(`text
