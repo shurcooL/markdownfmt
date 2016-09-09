@@ -58,9 +58,11 @@ func processFile(filename string, in io.Reader, out io.Writer, stdin bool) error
 		return err
 	}
 
-	stdout := int(os.Stdout.Fd())
+	isTerminal := func() bool {
+		return terminal.IsTerminal(int(os.Stdout.Fd())) && os.Getenv("TERM") != "dumb"
+	}
 	res, err := markdown.Process(filename, src, &markdown.Options{
-		Terminal: !*write && terminal.IsTerminal(stdout),
+		Terminal: !*write && isTerminal(),
 	})
 	if err != nil {
 		return err
