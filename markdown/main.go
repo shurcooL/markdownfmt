@@ -177,7 +177,7 @@ func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte,
 		out.WriteByte('|')
 		out.WriteByte(' ')
 		out.WriteString(cell)
-		for i := mr.stringWidth(string(cell)); i < mr.columnWidths[column]; i++ {
+		for i := mr.stringWidth(cell); i < mr.columnWidths[column]; i++ {
 			out.WriteByte(' ')
 		}
 		out.WriteByte(' ')
