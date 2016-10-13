@@ -297,7 +297,9 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, a
 	out.WriteString("](")
 	out.Write(link)
 	if len(title) != 0 {
-		fmt.Fprintf(out, ` "%s"`, title)
+		out.WriteString(` "`)
+		out.Write(title)
+		out.WriteString(`"`)
 	}
 	out.WriteString(")")
 }
@@ -310,7 +312,9 @@ func (_ *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, co
 	out.WriteString("](")
 	out.Write(link)
 	if len(title) != 0 {
-		fmt.Fprintf(out, ` "%s"`, title)
+		out.WriteString(` "`)
+		out.Write(title)
+		out.WriteString(`"`)
 	}
 	out.WriteString(")")
 }
