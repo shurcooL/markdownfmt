@@ -296,6 +296,9 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, a
 	out.Write(alt)
 	out.WriteString("](")
 	out.Write(link)
+	if len(title) != 0 {
+		fmt.Fprintf(out, ` "%s"`, title)
+	}
 	out.WriteString(")")
 }
 func (_ *markdownRenderer) LineBreak(out *bytes.Buffer) {
@@ -306,6 +309,9 @@ func (_ *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, co
 	out.Write(content)
 	out.WriteString("](")
 	out.Write(link)
+	if len(title) != 0 {
+		fmt.Fprintf(out, ` "%s"`, title)
+	}
 	out.WriteString(")")
 }
 func (_ *markdownRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {

@@ -142,6 +142,8 @@ An h2 header
 
 ![Hmm](http://example.org/image.png)
 
+![Alt text](/path/to/img.jpg "Optional title") ![Alt text](/path/to/img.jpg "Hello \" 世界")
+
 ~~Mistaken text.~~
 
 This (**should** be *fine*).
