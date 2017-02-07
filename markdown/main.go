@@ -438,8 +438,8 @@ func doubleSpace(out *bytes.Buffer) {
 // (which don't count towards string width).
 func terminalStringWidth(s string) (width int) {
 	width = runewidth.StringWidth(s)
-	width -= strings.Count(s, "\x1b[1m") * len("\x1b[1m") // HACK, TODO: Find a better way of doing this.
-	width -= strings.Count(s, "\x1b[0m") * len("\x1b[0m") // HACK, TODO: Find a better way of doing this.
+	width -= strings.Count(s, "\x1b[1m") * len("[1m") // HACK, TODO: Find a better way of doing this.
+	width -= strings.Count(s, "\x1b[0m") * len("[0m") // HACK, TODO: Find a better way of doing this.
 	return width
 }
 
