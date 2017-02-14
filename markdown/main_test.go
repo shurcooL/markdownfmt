@@ -372,6 +372,32 @@ func TestDoubleSpacedListEnd(t *testing.T) {
 	}
 }
 
+// https://github.com/shurcooL/markdownfmt/issues/35.
+func TestEscapeBackslashesInURLs(t *testing.T) {
+	const reference = `[Link](path\\to\\page)
+
+![Image](path\\to\\image)
+
+https://path\\to\\page
+`
+	input := []byte(reference)
+	expected := []byte(reference)
+
+	output, err := markdown.Process("", input, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	diff, err := diff(expected, output)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if len(diff) != 0 {
+		t.Errorf("Difference of %d lines:\n%s", bytes.Count(diff, []byte("\n")), string(diff))
+	}
+}
+
 // https://github.com/shurcooL/markdownfmt/issues/20
 func TestSuccessiveLines(t *testing.T) {
 	input := []byte(`text

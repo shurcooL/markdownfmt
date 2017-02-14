@@ -265,7 +265,7 @@ func (_ *markdownRenderer) FootnoteItem(out *bytes.Buffer, name, text []byte, fl
 
 // Span-level callbacks.
 func (_ *markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
-	out.Write(link)
+	out.Write(escape(link))
 }
 func (_ *markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
 	out.WriteByte('`')
@@ -295,7 +295,7 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, a
 	out.WriteString("![")
 	out.Write(alt)
 	out.WriteString("](")
-	out.Write(link)
+	out.Write(escape(link))
 	if len(title) != 0 {
 		out.WriteString(` "`)
 		out.Write(title)
@@ -310,7 +310,7 @@ func (_ *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, co
 	out.WriteString("[")
 	out.Write(content)
 	out.WriteString("](")
-	out.Write(link)
+	out.Write(escape(link))
 	if len(title) != 0 {
 		out.WriteString(` "`)
 		out.Write(title)
@@ -333,6 +333,11 @@ func (_ *markdownRenderer) StrikeThrough(out *bytes.Buffer, text []byte) {
 }
 func (_ *markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 	out.WriteString("<FootnoteRef: Not implemented.>") // TODO
+}
+
+// escape replaces instances of backslash with escaped backslash in text.
+func escape(text []byte) []byte {
+	return bytes.Replace(text, []byte(`\`), []byte(`\\`), -1)
 }
 
 func isNumber(data []byte) bool {
