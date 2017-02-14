@@ -34,7 +34,6 @@ func report(err error) {
 func usage() {
 	fmt.Fprintf(os.Stderr, "usage: markdownfmt [flags] [path ...]\n")
 	flag.PrintDefaults()
-	os.Exit(2)
 }
 
 func isMarkdownFile(f os.FileInfo) bool {
