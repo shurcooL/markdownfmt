@@ -1,4 +1,6 @@
-FROM golang:1.4
+FROM golang:1.8-alpine
+
+RUN apk add --no-cache git
 
 ENV BLACKFRIDAY_VERSION v1.4
 
