@@ -1,8 +1,9 @@
-FROM golang:1.8-alpine
+FROM golang:1.9-alpine3.7
 
 RUN apk add --no-cache git
 
-ENV BLACKFRIDAY_VERSION v1.4
+# https://github.com/russross/blackfriday/releases
+ENV BLACKFRIDAY_VERSION v1.5
 
 RUN git clone \
 		-b $BLACKFRIDAY_VERSION \
