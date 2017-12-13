@@ -64,16 +64,15 @@ func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string
 	}
 
 	if formattedCode, ok := formatCode(lang, text); ok {
-		if count == 0 {
-			formattedCode = []byte("\t" + strings.TrimRight(strings.Replace(string(formattedCode), "\n", "\n\t", -1), "\t"))
-		}
-		out.Write(formattedCode)
-	} else {
-		if count == 0 {
-			text = []byte("\t" + strings.TrimRight(strings.Replace(string(text), "\n", "\n\t", -1), "\t"))
-		}
-		out.Write(text)
+		text = formattedCode
 	}
+
+	text = []byte(strings.TrimSuffix(string(text), "\n"))
+	if count == 0 {
+		text = []byte("\t" + strings.Replace(string(text), "\n", "\n\t", -1))
+	}
+	out.Write(text)
+	out.WriteString("\n")
 
 	if count != 0 {
 		out.WriteString("```\n")
