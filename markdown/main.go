@@ -5,13 +5,16 @@ import (
 	"bytes"
 	"fmt"
 	"go/format"
+	"io"
 	"io/ioutil"
 	"strings"
 
 	"github.com/mattn/go-runewidth"
-	"github.com/russross/blackfriday"
 	"github.com/shurcooL/go/indentwriter"
+	"gopkg.in/russross/blackfriday.v2"
 )
+
+var _ blackfriday.Renderer = (*markdownRenderer)(nil)
 
 type markdownRenderer struct {
 	normalTextMarker   map[*bytes.Buffer]int
@@ -30,6 +33,18 @@ type markdownRenderer struct {
 
 	// stringWidth is used internally to calculate visual width of a string.
 	stringWidth func(s string) (width int)
+}
+
+func (r *markdownRenderer) RenderNode(w io.Writer, node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
+	panic("implement me")
+}
+
+func (r *markdownRenderer) RenderHeader(w io.Writer, ast *blackfriday.Node) {
+	panic("implement me")
+}
+
+func (r *markdownRenderer) RenderFooter(w io.Writer, ast *blackfriday.Node) {
+	panic("implement me")
 }
 
 func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
@@ -484,15 +499,15 @@ func Process(filename string, src []byte, opt *Options) ([]byte, error) {
 	}
 
 	// extensions for GitHub Flavored Markdown-like parsing.
-	const extensions = blackfriday.EXTENSION_NO_INTRA_EMPHASIS |
-		blackfriday.EXTENSION_TABLES |
-		blackfriday.EXTENSION_FENCED_CODE |
-		blackfriday.EXTENSION_AUTOLINK |
-		blackfriday.EXTENSION_STRIKETHROUGH |
-		blackfriday.EXTENSION_SPACE_HEADERS |
-		blackfriday.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK
+	const extensions = blackfriday.NoIntraEmphasis |
+		blackfriday.Tables |
+		blackfriday.FencedCode |
+		blackfriday.Autolink |
+		blackfriday.Strikethrough |
+		blackfriday.SpaceHeadings |
+		blackfriday.NoEmptyLineBeforeBlock
 
-	output := blackfriday.Markdown(text, NewRenderer(opt), extensions)
+	output := blackfriday.Run(text, blackfriday.WithRenderer(NewRenderer(opt)), blackfriday.WithExtensions(extensions))
 	return output, nil
 }
 
