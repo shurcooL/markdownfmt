@@ -11,7 +11,9 @@ import (
 func TestNormalStringWidth(t *testing.T) {
 	r := NewRenderer(nil).(*markdownRenderer)
 	var buf bytes.Buffer
-	r.DoubleEmphasis(&buf, []byte("bold"))
+	r.Strong(&buf, true)
+	buf.WriteString("bold")
+	r.Strong(&buf, false)
 	if got, want := buf.String(), "**bold**"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
@@ -27,7 +29,9 @@ func TestNormalStringWidth(t *testing.T) {
 func TestTerminalStringWidth(t *testing.T) {
 	r := NewRenderer(&Options{Terminal: true}).(*markdownRenderer)
 	var buf bytes.Buffer
-	r.DoubleEmphasis(&buf, []byte("bold"))
+	r.Strong(&buf, true)
+	buf.WriteString("bold")
+	r.Strong(&buf, false)
 	if got, want := buf.String(), "\x1b[1m**bold**\x1b[0m"; got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
