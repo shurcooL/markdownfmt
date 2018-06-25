@@ -171,7 +171,7 @@ func (mr *markdownRenderer) Paragraph(out *bytes.Buffer, text func() bool) {
 	out.WriteString("\n")
 }
 
-func (mr *markdownRenderer) Table(out *bytes.Buffer, header []byte, body []byte, columnData []int) {
+func (mr *markdownRenderer) Table(out *bytes.Buffer, header, body []byte, columnData []int) {
 	doubleSpace(out)
 	for column, cell := range mr.headers {
 		out.WriteByte('|')
@@ -291,7 +291,7 @@ func (_ *markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	out.Write(text)
 	out.WriteByte('*')
 }
-func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, alt []byte) {
+func (_ *markdownRenderer) Image(out *bytes.Buffer, link, title, alt []byte) {
 	out.WriteString("![")
 	out.Write(alt)
 	out.WriteString("](")
@@ -306,7 +306,7 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link []byte, title []byte, a
 func (_ *markdownRenderer) LineBreak(out *bytes.Buffer) {
 	out.WriteString("  \n")
 }
-func (_ *markdownRenderer) Link(out *bytes.Buffer, link []byte, title []byte, content []byte) {
+func (_ *markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
 	out.WriteString("[")
 	out.Write(content)
 	out.WriteString("](")
