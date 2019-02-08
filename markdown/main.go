@@ -336,7 +336,7 @@ func isNumber(data []byte) bool {
 			return false
 		}
 	}
-	return true
+	return len(data) > 0
 }
 
 func needsEscaping(text []byte, lastNormalText string) bool {
