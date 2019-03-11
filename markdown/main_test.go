@@ -94,7 +94,7 @@ func Test(t *testing.T) {
 		}
 		name := strings.TrimSuffix(fi.Name(), ".in.md")
 		t.Run(name, func(t *testing.T) {
-			got, err := markdown.Process(filepath.Join("testdata", fi.Name()), nil, nil)
+			got, err := markdown.Process(filepath.Join("testdata", name+".in.md"), nil, nil)
 			if err != nil {
 				t.Fatal("markdown.Process:", err)
 			}
