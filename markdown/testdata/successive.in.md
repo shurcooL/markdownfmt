@@ -1,4 +1,4 @@
-Demonstrates https://github.com/shurcooL/markdownfmt/issues/20
+Test for issue https://github.com/shurcooL/markdownfmt/issues/20.
 
 text
 text
