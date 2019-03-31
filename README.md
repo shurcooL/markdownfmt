@@ -35,6 +35,7 @@ Editor Plugins
 -	[emacs-markdownfmt](https://github.com/nlamirault/emacs-markdownfmt) for Emacs.
 -	Built-in in Conception.
 -	[markdown-format](https://atom.io/packages/markdown-format) for Atom (deprecated).
+- [vscode-markdownfmt](https://github.com/Anmol-Singh-Jaggi/vscode-markdownfmt) for VS Code.
 -	Add a plugin for your favorite editor here?
 
 Alternatives
