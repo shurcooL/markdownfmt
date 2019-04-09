@@ -33,9 +33,9 @@ Editor Plugins
 
 -	[vim-markdownfmt](https://github.com/moorereason/vim-markdownfmt) for Vim.
 -	[emacs-markdownfmt](https://github.com/nlamirault/emacs-markdownfmt) for Emacs.
+-	[vscode-markdownfmt](https://marketplace.visualstudio.com/itemdetails?itemName=AnmolSinghJaggi.vscode-markdownfmt) for Visual Studio Code.
 -	Built-in in Conception.
 -	[markdown-format](https://atom.io/packages/markdown-format) for Atom (deprecated).
-- [vscode-markdownfmt](https://marketplace.visualstudio.com/items?itemName=AnmolSinghJaggi.vscode-markdownfmt#overview) for VS Code.
 -	Add a plugin for your favorite editor here?
 
 Alternatives
