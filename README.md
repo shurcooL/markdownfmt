@@ -43,7 +43,7 @@ Alternatives
 
 -	[`mdfmt`](https://github.com/moorereason/mdfmt) - Fork of `markdownfmt` that adds front matter support.
 -	[`tidy-markdown`](https://github.com/slang800/tidy-markdown) - Project with similar goals, but written in JS and based on a slightly different [styleguide](https://github.com/slang800/markdown-styleguide).
-- [Flowmark](https://github.com/jlevy/atom-flowmark) - A JS-based Atom plugin with line wrapping, YAML frontmatter support, and other normalization features.
+-	[Flowmark](https://github.com/jlevy/atom-flowmark) - A JS-based Atom plugin with line wrapping, YAML frontmatter support, and other normalization features.
 
 License
 -------
