@@ -25,7 +25,8 @@ Usage
 usage: markdownfmt [flags] [path ...]
   -d=false: display diffs instead of rewriting files
   -l=false: list files whose formatting differs from markdownfmt's
-  -w=false: write result to (source) file instead of stdout
+  -s=false: use atx header style, if true use settext
+  -w=false: write result to (source) file instead of
 ```
 
 Editor Plugins
