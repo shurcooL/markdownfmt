@@ -19,9 +19,10 @@ import (
 
 var (
 	// Main operation modes.
-	list   = flag.Bool("l", false, "list files whose formatting differs from markdownfmt's")
-	write  = flag.Bool("w", false, "write result to (source) file instead of stdout")
-	doDiff = flag.Bool("d", false, "display diffs instead of rewriting files")
+	list              = flag.Bool("l", false, "list files whose formatting differs from markdownfmt's")
+	write             = flag.Bool("w", false, "write result to (source) file instead of stdout")
+	doDiff            = flag.Bool("d", false, "display diffs instead of rewriting files")
+	useSetTextHeaders = flag.Bool("s", false, "use settext style headers instead of atx ones")
 
 	exitCode = 0
 )
@@ -61,7 +62,8 @@ func processFile(filename string, in io.Reader, out io.Writer, stdin bool) error
 		return term.IsTerminal(int(os.Stdout.Fd())) && os.Getenv("TERM") != "dumb"
 	}
 	res, err := markdown.Process(filename, src, &markdown.Options{
-		Terminal: !*list && !*write && !*doDiff && isTerminal(),
+		Terminal:          !*list && !*write && !*doDiff && isTerminal(),
+		UseSetTextHeaders: *useSetTextHeaders,
 	})
 	if err != nil {
 		return err

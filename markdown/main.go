@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/mattn/go-runewidth"
+	runewidth "github.com/mattn/go-runewidth"
 	"github.com/russross/blackfriday"
 	"github.com/shurcooL/go/indentwriter"
 )
@@ -102,24 +102,32 @@ func (*markdownRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
 func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
 	doubleSpace(out)
+	if mr.opt.UseSetTextHeaders == true {
+		if level >= 3 {
+			fmt.Fprint(out, strings.Repeat("#", level), " ")
+		}
 
-	if level >= 3 {
+		textMarker := out.Len()
+		if !text() {
+			out.Truncate(marker)
+			return
+		}
+
+		switch level {
+		case 1:
+			len := mr.stringWidth(out.String()[textMarker:])
+			fmt.Fprint(out, "\n", strings.Repeat("=", len))
+		case 2:
+			len := mr.stringWidth(out.String()[textMarker:])
+			fmt.Fprint(out, "\n", strings.Repeat("-", len))
+		}
+	} else {
 		fmt.Fprint(out, strings.Repeat("#", level), " ")
-	}
-
-	textMarker := out.Len()
-	if !text() {
-		out.Truncate(marker)
-		return
-	}
-
-	switch level {
-	case 1:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("=", len))
-	case 2:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("-", len))
+		// textMarker := out.Len()
+		if !text() {
+			out.Truncate(marker)
+			return
+		}
 	}
 	out.WriteString("\n")
 }
@@ -470,7 +478,8 @@ func NewRenderer(opt *Options) blackfriday.Renderer {
 // Options specifies options for formatting.
 type Options struct {
 	// Terminal specifies if ANSI escape codes are emitted for styling.
-	Terminal bool
+	Terminal          bool
+	UseSetTextHeaders bool
 }
 
 // Process formats Markdown.
