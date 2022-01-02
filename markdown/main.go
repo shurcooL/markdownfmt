@@ -58,24 +58,25 @@ func (*markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) 
 		if len(elt) == 0 {
 			continue
 		}
-		out.WriteString("```")
-		out.WriteString(elt)
+		out.WriteString("```" + elt + "\n")
 		count++
 		break
 	}
 
-	if count == 0 {
-		out.WriteString("```")
+	if formattedCode, ok := formatCode(lang, text); ok {
+		text = formattedCode
 	}
+
+	text = []byte(strings.TrimSuffix(string(text), "\n"))
+	if count == 0 {
+		text = []byte("\t" + strings.Replace(string(text), "\n", "\n\t", -1))
+	}
+	out.Write(text)
 	out.WriteString("\n")
 
-	if formattedCode, ok := formatCode(lang, text); ok {
-		out.Write(formattedCode)
-	} else {
-		out.Write(text)
+	if count != 0 {
+		out.WriteString("```\n")
 	}
-
-	out.WriteString("```\n")
 }
 func (*markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
@@ -103,24 +104,13 @@ func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level in
 	marker := out.Len()
 	doubleSpace(out)
 
-	if level >= 3 {
-		fmt.Fprint(out, strings.Repeat("#", level), " ")
-	}
+	fmt.Fprint(out, strings.Repeat("#", level), " ")
 
-	textMarker := out.Len()
 	if !text() {
 		out.Truncate(marker)
 		return
 	}
 
-	switch level {
-	case 1:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("=", len))
-	case 2:
-		len := mr.stringWidth(out.String()[textMarker:])
-		fmt.Fprint(out, "\n", strings.Repeat("-", len))
-	}
 	out.WriteString("\n")
 }
 func (*markdownRenderer) HRule(out *bytes.Buffer) {
@@ -357,7 +347,7 @@ func needsEscaping(text []byte, lastNormalText string) bool {
 		"_",
 		"{", "}",
 		"[", "]",
-		"(", ")",
+		//"(", ")",
 		"#",
 		"+",
 		"-":
