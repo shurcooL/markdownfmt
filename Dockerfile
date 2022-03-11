@@ -1,24 +1,12 @@
-FROM golang:1.12-alpine3.10
+FROM golang:1.17-alpine3.15
 
-RUN apk add --no-cache git
+WORKDIR /usr/src/markdownfmt
 
-# https://github.com/russross/blackfriday/releases
-ENV BLACKFRIDAY_VERSION v1.5.1
+COPY go.mod go.sum ./
+RUN set -eux; go mod download; go mod verify
 
-RUN git clone \
-		-b "$BLACKFRIDAY_VERSION" \
-		--depth 1 \
-		https://github.com/russross/blackfriday.git \
-		"$GOPATH/src/github.com/russross/blackfriday"
-
-ENV GOPKG github.com/shurcooL/markdownfmt
-
-RUN go get -v -d "$GOPKG" \
-	&& rm -rv "$GOPATH/src/$GOPKG"
-
-WORKDIR $GOPATH/src/$GOPKG
 COPY . .
 
-RUN go install -v $GOPKG
+RUN go install -v
 
 CMD ["markdownfmt"]

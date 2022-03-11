@@ -14,7 +14,7 @@ import (
 	"strings"
 
 	"github.com/shurcooL/markdownfmt/markdown"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 var (
@@ -58,7 +58,7 @@ func processFile(filename string, in io.Reader, out io.Writer, stdin bool) error
 	}
 
 	isTerminal := func() bool {
-		return terminal.IsTerminal(int(os.Stdout.Fd())) && os.Getenv("TERM") != "dumb"
+		return term.IsTerminal(int(os.Stdout.Fd())) && os.Getenv("TERM") != "dumb"
 	}
 	res, err := markdown.Process(filename, src, &markdown.Options{
 		Terminal: !*list && !*write && !*doDiff && isTerminal(),
