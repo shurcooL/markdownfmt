@@ -67,7 +67,7 @@ func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string
 		text = formattedCode
 	}
 
-	text = []byte(strings.TrimSuffix(string(text), "\n"))
+	text = []byte(strings.Trim(string(text), "\n"))
 	if count == 0 {
 		text = []byte("\t" + strings.Replace(string(text), "\n", "\n\t", -1))
 	}
