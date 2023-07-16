@@ -1,7 +1,7 @@
 markdownfmt
 ===========
 
-[![Build Status](https://travis-ci.org/shurcooL/markdownfmt.svg?branch=master)](https://travis-ci.org/shurcooL/markdownfmt) [![GoDoc](https://godoc.org/github.com/shurcooL/markdownfmt?status.svg)](https://godoc.org/github.com/shurcooL/markdownfmt)
+[![Go Reference](https://pkg.go.dev/badge/github.com/shurcooL/markdownfmt.svg)](https://pkg.go.dev/github.com/shurcooL/markdownfmt)
 
 Like `gofmt`, but for Markdown.
 
@@ -12,20 +12,18 @@ Note that `markdownfmt` works with pure Markdown files. If you want to use it wi
 Installation
 ------------
 
-```bash
-go get -u github.com/shurcooL/markdownfmt
+```sh
+go install github.com/shurcooL/markdownfmt@latest
 ```
-
-Add `$GOPATH/bin` to your `$PATH` or copy `$GOPATH/bin/markdownfmt` to your `$PATH`.
 
 Usage
 -----
 
-```
+```sh
 usage: markdownfmt [flags] [path ...]
-  -d=false: display diffs instead of rewriting files
-  -l=false: list files whose formatting differs from markdownfmt's
-  -w=false: write result to (source) file instead of stdout
+  -d  display diffs instead of rewriting files
+  -l  list files whose formatting differs from markdownfmt's
+  -w  write result to (source) file instead of stdout
 ```
 
 Editor Plugins
