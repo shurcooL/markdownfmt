@@ -1,6 +1,6 @@
 module github.com/shurcooL/markdownfmt
 
-go 1.17
+go 1.21
 
 require (
 	github.com/mattn/go-runewidth v0.0.13

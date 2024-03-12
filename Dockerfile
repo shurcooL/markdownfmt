@@ -1,12 +1,16 @@
-FROM golang:1.17-alpine3.15
+FROM golang:1.21-alpine3.19 AS build
 
-WORKDIR /usr/src/markdownfmt
+WORKDIR /markdownfmt
 
 COPY go.mod go.sum ./
 RUN set -eux; go mod download; go mod verify
 
 COPY . .
 
-RUN go install -v
+RUN set -eux; go build -v -trimpath -o markdownfmt ./; ./markdownfmt -h
+
+FROM alpine:3.19
+
+COPY --from=build /markdownfmt/markdownfmt /usr/local/bin/
 
 CMD ["markdownfmt"]
