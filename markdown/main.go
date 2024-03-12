@@ -46,7 +46,7 @@ func formatCode(lang string, text []byte) (formattedCode []byte, ok bool) {
 }
 
 // Block-level callbacks.
-func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) {
+func (*markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 	doubleSpace(out)
 
 	// Parse out the language name.
@@ -78,7 +78,7 @@ func (_ *markdownRenderer) BlockCode(out *bytes.Buffer, text []byte, lang string
 		out.WriteString("```\n")
 	}
 }
-func (_ *markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
 	lines := bytes.Split(text, []byte("\n"))
 	for i, line := range lines {
@@ -93,12 +93,12 @@ func (_ *markdownRenderer) BlockQuote(out *bytes.Buffer, text []byte) {
 		out.WriteString("\n")
 	}
 }
-func (_ *markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) BlockHtml(out *bytes.Buffer, text []byte) {
 	doubleSpace(out)
 	out.Write(text)
 	out.WriteByte('\n')
 }
-func (_ *markdownRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) TitleBlock(out *bytes.Buffer, text []byte) {
 }
 func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level int, id string) {
 	marker := out.Len()
@@ -113,7 +113,7 @@ func (mr *markdownRenderer) Header(out *bytes.Buffer, text func() bool, level in
 
 	out.WriteString("\n")
 }
-func (_ *markdownRenderer) HRule(out *bytes.Buffer) {
+func (*markdownRenderer) HRule(out *bytes.Buffer) {
 	doubleSpace(out)
 	out.WriteString("---\n")
 }
@@ -229,7 +229,7 @@ func (mr *markdownRenderer) Table(out *bytes.Buffer, header, body []byte, column
 	mr.columnWidths = nil
 	mr.cells = nil
 }
-func (_ *markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) TableRow(out *bytes.Buffer, text []byte) {
 }
 func (mr *markdownRenderer) TableHeaderCell(out *bytes.Buffer, text []byte, align int) {
 	mr.columnAligns = append(mr.columnAligns, align)
@@ -246,18 +246,18 @@ func (mr *markdownRenderer) TableCell(out *bytes.Buffer, text []byte, align int)
 	mr.cells = append(mr.cells, string(text))
 }
 
-func (_ *markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
+func (*markdownRenderer) Footnotes(out *bytes.Buffer, text func() bool) {
 	out.WriteString("<Footnotes: Not implemented.>") // TODO
 }
-func (_ *markdownRenderer) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int) {
+func (*markdownRenderer) FootnoteItem(out *bytes.Buffer, name, text []byte, flags int) {
 	out.WriteString("<FootnoteItem: Not implemented.>") // TODO
 }
 
 // Span-level callbacks.
-func (_ *markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
+func (*markdownRenderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
 	out.Write(escape(link))
 }
-func (_ *markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) CodeSpan(out *bytes.Buffer, text []byte) {
 	out.WriteByte('`')
 	out.Write(text)
 	out.WriteByte('`')
@@ -273,7 +273,7 @@ func (mr *markdownRenderer) DoubleEmphasis(out *bytes.Buffer, text []byte) {
 		out.WriteString("\x1b[0m") // Reset.
 	}
 }
-func (_ *markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	if len(text) == 0 {
 		return
 	}
@@ -281,7 +281,7 @@ func (_ *markdownRenderer) Emphasis(out *bytes.Buffer, text []byte) {
 	out.Write(text)
 	out.WriteByte('*')
 }
-func (_ *markdownRenderer) Image(out *bytes.Buffer, link, title, alt []byte) {
+func (*markdownRenderer) Image(out *bytes.Buffer, link, title, alt []byte) {
 	out.WriteString("![")
 	out.Write(alt)
 	out.WriteString("](")
@@ -293,10 +293,10 @@ func (_ *markdownRenderer) Image(out *bytes.Buffer, link, title, alt []byte) {
 	}
 	out.WriteString(")")
 }
-func (_ *markdownRenderer) LineBreak(out *bytes.Buffer) {
+func (*markdownRenderer) LineBreak(out *bytes.Buffer) {
 	out.WriteString("  \n")
 }
-func (_ *markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
+func (*markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) {
 	out.WriteString("[")
 	out.Write(content)
 	out.WriteString("](")
@@ -308,20 +308,20 @@ func (_ *markdownRenderer) Link(out *bytes.Buffer, link, title, content []byte) 
 	}
 	out.WriteString(")")
 }
-func (_ *markdownRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {
+func (*markdownRenderer) RawHtmlTag(out *bytes.Buffer, tag []byte) {
 	out.Write(tag)
 }
-func (_ *markdownRenderer) TripleEmphasis(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) TripleEmphasis(out *bytes.Buffer, text []byte) {
 	out.WriteString("***")
 	out.Write(text)
 	out.WriteString("***")
 }
-func (_ *markdownRenderer) StrikeThrough(out *bytes.Buffer, text []byte) {
+func (*markdownRenderer) StrikeThrough(out *bytes.Buffer, text []byte) {
 	out.WriteString("~~")
 	out.Write(text)
 	out.WriteString("~~")
 }
-func (_ *markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
+func (*markdownRenderer) FootnoteRef(out *bytes.Buffer, ref []byte, id int) {
 	out.WriteString("<FootnoteRef: Not implemented.>") // TODO
 }
 
@@ -365,7 +365,7 @@ func needsEscaping(text []byte, lastNormalText string) bool {
 }
 
 // Low-level callbacks.
-func (_ *markdownRenderer) Entity(out *bytes.Buffer, entity []byte) {
+func (*markdownRenderer) Entity(out *bytes.Buffer, entity []byte) {
 	out.Write(entity)
 }
 func (mr *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
@@ -391,10 +391,10 @@ func (mr *markdownRenderer) NormalText(out *bytes.Buffer, text []byte) {
 }
 
 // Header and footer.
-func (_ *markdownRenderer) DocumentHeader(out *bytes.Buffer) {}
-func (_ *markdownRenderer) DocumentFooter(out *bytes.Buffer) {}
+func (*markdownRenderer) DocumentHeader(out *bytes.Buffer) {}
+func (*markdownRenderer) DocumentFooter(out *bytes.Buffer) {}
 
-func (_ *markdownRenderer) GetFlags() int { return 0 }
+func (*markdownRenderer) GetFlags() int { return 0 }
 
 func (mr *markdownRenderer) skipSpaceIfNeededNormalText(out *bytes.Buffer, cleanString string) bool {
 	if cleanString[0] != ' ' {

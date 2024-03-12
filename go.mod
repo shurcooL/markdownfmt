@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/mattn/go-runewidth v0.0.13
-	github.com/russross/blackfriday v1.5.1
+	github.com/russross/blackfriday v1.6.0
 	github.com/shurcooL/go v0.0.0-20200502201357-93f07166e636
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
